@@ -1,5 +1,6 @@
 package it.meucci;
 
+import java.nio.charset.StandardCharsets;
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.PreparedStatement;
@@ -55,9 +56,9 @@ public class ManagerDB
 	}
 	
 	
-	public ArrayList<String> listaProvincie()
+	public ArrayList<String> listaProvince()
 	{
-		ArrayList<String> provincie = new ArrayList<String>();
+		ArrayList<String> province = new ArrayList<String>();
 		
 		
 		try 
@@ -67,7 +68,7 @@ public class ManagerDB
 			ResultSet rs = ps.executeQuery();
 			while(rs.next())
 			{
-				provincie.add(rs.getString("sigla"));
+				province.add(rs.getString("sigla"));
 			}
 		} 
 		catch (Exception e) 
@@ -76,7 +77,7 @@ public class ManagerDB
 		}
 		
 		
-		return provincie;
+		return province;
 	}
 	
 	
@@ -93,7 +94,30 @@ public class ManagerDB
 			ResultSet rs = ps.executeQuery();
 			while(rs.next())
 			{
-				comuni.add(rs.getString("comune"));
+				if(rs.getString("comune").endsWith("à"))
+				{
+					comuni.add(rs.getString("comune").substring(0, rs.getString("comune").length() - 1) + "&agrave;");
+				}
+				else if(rs.getString("comune").endsWith("è"))
+				{
+					comuni.add(rs.getString("comune").substring(0, rs.getString("comune").length() - 1) + "&egrave;");
+				}
+				else if(rs.getString("comune").endsWith("ì"))
+				{
+					comuni.add(rs.getString("comune").substring(0, rs.getString("comune").length() - 1) + "&igrave;");
+				}
+				else if(rs.getString("comune").endsWith("ò"))
+				{
+					comuni.add(rs.getString("comune").substring(0, rs.getString("comune").length() - 1) + "&ograve;");
+				}
+				else if(rs.getString("comune").endsWith("ù"))
+				{
+					comuni.add(rs.getString("comune").substring(0, rs.getString("comune").length() - 1) + "&ugrave;");
+				}
+				else
+				{
+					comuni.add(rs.getString("comune"));
+				}
 			}
 		}
 		catch (Exception e) 

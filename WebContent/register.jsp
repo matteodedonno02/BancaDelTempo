@@ -2,10 +2,10 @@
 <%@ page language="java" contentType="text/html; charset=utf-8"
 	pageEncoding="utf-8"%>
 <%!
-ArrayList<String> provincie;
+ArrayList<String> province;
 %>
 <%
-provincie = (ArrayList<String>) getServletContext().getAttribute("PROVINCIE");
+province = (ArrayList<String>) getServletContext().getAttribute("PROVINCE");
 %>
 <!DOCTYPE html>
 <html>
@@ -94,10 +94,10 @@ provincie = (ArrayList<String>) getServletContext().getAttribute("PROVINCIE");
 								<select class="form-control" name="txtProvincia">
 									<option selected="true" disabled="disabled">Provincia</option>    
 								<%
-								for(int i = 0; i < provincie.size(); i ++)
+								for(int i = 0; i < province.size(); i ++)
 								{
 								%>
-									<option><%=provincie.get(i) %></option>
+									<option><%=province.get(i) %></option>
 								<%
 								}
 								%>

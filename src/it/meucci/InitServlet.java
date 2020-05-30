@@ -35,7 +35,7 @@ public class InitServlet extends HttpServlet
 			
 			
 			ManagerDB db = new ManagerDB(prop.getProperty("db.host"), prop.getProperty("db.port"), prop.getProperty("db.database"), prop.getProperty("db.user"), prop.getProperty("db.password"));
-			config.getServletContext().setAttribute("PROVINCIE", db.listaProvincie());
+			config.getServletContext().setAttribute("PROVINCE", db.listaProvince());
 			db.chiudiConnessione();
 		} 
 		catch (Exception e) 
