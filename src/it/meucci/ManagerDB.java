@@ -4,6 +4,8 @@ import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
+import java.sql.SQLIntegrityConstraintViolationException;
+import java.util.ArrayList;
 
 public class ManagerDB 
 {
@@ -17,7 +19,7 @@ public class ManagerDB
 			Class.forName("com.mysql.cj.jdbc.Driver");
 			
 			
-			conn = DriverManager.getConnection("jdbc:mysql://" + host + ":" + port + "/" + database, user, password);
+			conn = DriverManager.getConnection("jdbc:mysql://" + host + ":" + port + "/" + database + "?characterEncoding=utf8", user, password);
 		}
 		catch (Exception e) 
 		{
@@ -40,9 +42,8 @@ public class ManagerDB
 			ResultSet rs = ps.executeQuery();
 			if(rs.next())
 			{
-				temp = new Utente(rs.getInt("idUtente"), rs.getString("email"), rs.getString("password"), rs.getString("nome"), rs.getString("cognome"), rs.getString("indirizzo"), rs.getString("telefono"), rs.getInt("tipoUtente"), rs.getInt("idZona"));
+				temp = new Utente(rs.getInt("idUtente"), rs.getString("email"), rs.getString("password"), rs.getString("nominativo"), rs.getString("indirizzo"), rs.getString("telefono"), rs.getInt("tipoUtente"), rs.getInt("idZona"));
 			}
-			
 		} 
 		catch (Exception e) 
 		{
@@ -51,6 +52,111 @@ public class ManagerDB
 		
 		
 		return temp;
+	}
+	
+	
+	public ArrayList<String> listaProvincie()
+	{
+		ArrayList<String> provincie = new ArrayList<String>();
+		
+		
+		try 
+		{
+			String query = "SELECT * FROM italy_provincies";
+			PreparedStatement ps = conn.prepareStatement(query);
+			ResultSet rs = ps.executeQuery();
+			while(rs.next())
+			{
+				provincie.add(rs.getString("sigla"));
+			}
+		} 
+		catch (Exception e) 
+		{
+			e.printStackTrace();
+		}
+		
+		
+		return provincie;
+	}
+	
+	
+	public ArrayList<String> comuneDaProvincia(String provincia)
+	{
+		ArrayList<String> comuni = new ArrayList<String>();
+		
+		
+		try 
+		{
+			String query = "SELECT * FROM italy_cities WHERE provincia LIKE ?";
+			PreparedStatement ps = conn.prepareStatement(query);
+			ps.setString(1, provincia);
+			ResultSet rs = ps.executeQuery();
+			while(rs.next())
+			{
+				comuni.add(rs.getString("comune"));
+			}
+		}
+		catch (Exception e) 
+		{
+			e.printStackTrace();
+		}
+		
+		
+		return comuni;
+	}
+	
+	
+	public int registrazione(Utente temp) 
+	{
+		try 
+		{
+			String query = "SELECT * FROM zone WHERE descrizione = ?";
+			PreparedStatement ps = conn.prepareStatement(query);
+			ps.setString(1, temp.getIndirizzo().split(",")[2].substring(1));
+			
+			
+			ResultSet rs = ps.executeQuery();
+			if(!rs.next())
+			{
+				query = "INSERT INTO zone (descrizione) VALUES (?)";
+				ps = conn.prepareStatement(query);
+				ps.setString(1, temp.getIndirizzo().split(",")[2].substring(1));
+				ps.execute();
+			}
+			
+			
+			query = "SELECT * FROM zone WHERE descrizione = ?";
+			ps = conn.prepareStatement(query);
+			ps.setString(1, temp.getIndirizzo().split(",")[2].substring(1));
+			rs = ps.executeQuery();
+			int idZona = 0;
+			if(rs.next())
+			{
+				idZona = rs.getInt("idZona");
+			}
+			
+			
+			query = "INSERT INTO utenti VALUES (0, ?, md5(?), ?, ?, ?, 0, ?)";
+			ps = conn.prepareStatement(query);
+			ps.setString(1, temp.getEmail());
+			ps.setString(2, temp.getPassword());
+			ps.setString(3, temp.getNominativo());
+			ps.setString(4, temp.getIndirizzo());
+			ps.setString(5, temp.getTelefono());
+			ps.setInt(6, idZona);
+			ps.execute();
+			
+			return 1;
+		}
+		catch (SQLIntegrityConstraintViolationException e) 
+		{
+			return 0;
+		}
+		catch (Exception e) 
+		{
+			e.printStackTrace();
+			return -1;
+		}
 	}
 	
 	

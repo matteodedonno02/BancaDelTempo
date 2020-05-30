@@ -5,29 +5,38 @@ public class Utente
 	private int idUtente;
 	private String email;
 	private String password;
-	private String nome;
-	private String cognome;
+	private String nominativo;
 	private String indirizzo;
 	private String telefono;
 	private int tipoUtente;
 	private int idZona;
 	
 	
-	public Utente(int idUtente, String email, String password, String nome, String cognome, String indirizzo, String telefono, int tipoUtente, int idZona) 
+	public Utente(int idUtente, String email, String password, String nominativo, String indirizzo, String telefono, int tipoUtente, int idZona) 
 	{
 		super();
 		this.idUtente = idUtente;
 		this.email = email;
 		this.password = password;
-		this.nome = nome;
-		this.cognome = cognome;
+		this.nominativo = nominativo;
 		this.indirizzo = indirizzo;
 		this.telefono = telefono;
 		this.tipoUtente = tipoUtente;
 		this.idZona = idZona;
 	}
-
-
+	
+	
+	public Utente(String email, String password, String nominativo, String indirizzo, String telefono) 
+	{
+		super();
+		this.email = email;
+		this.password = password;
+		this.nominativo = nominativo;
+		this.indirizzo = indirizzo;
+		this.telefono = telefono;
+	}
+	
+	
 	public int getIdUtente() 
 	{
 		return idUtente;
@@ -63,26 +72,14 @@ public class Utente
 	}
 
 
-	public String getNome() {
-		return nome;
+	public String getNominativo() {
+		return nominativo;
 	}
 
 
-	public void setNome(String nome) 
+	public void setNominativo(String nominativo) 
 	{
-		this.nome = nome;
-	}
-
-
-	public String getCognome() 
-	{
-		return cognome;
-	}
-
-
-	public void setCognome(String cognome) 
-	{
-		this.cognome = cognome;
+		this.nominativo = nominativo;
 	}
 
 
@@ -137,8 +134,8 @@ public class Utente
 	@Override
 	public String toString() 
 	{
-		return "Utente [idUtente=" + idUtente + ", email=" + email + ", password=" + password + ", nome=" + nome
-				+ ", cognome=" + cognome + ", indirizzo=" + indirizzo + ", telefono=" + telefono + ", tipoUtente="
+		return "Utente [idUtente=" + idUtente + ", email=" + email + ", password=" + password + ", nominativo=" + nominativo
+				+ ", indirizzo=" + indirizzo + ", telefono=" + telefono + ", tipoUtente="
 				+ tipoUtente + ", idZona=" + idZona + "]";
 	}
 }

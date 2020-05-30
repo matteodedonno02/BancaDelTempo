@@ -32,6 +32,11 @@ public class InitServlet extends HttpServlet
 			Properties prop = new Properties();
 			prop.load(new FileInputStream(filePath));
 			config.getServletContext().setAttribute("PROPERTIES", prop);
+			
+			
+			ManagerDB db = new ManagerDB(prop.getProperty("db.host"), prop.getProperty("db.port"), prop.getProperty("db.database"), prop.getProperty("db.user"), prop.getProperty("db.password"));
+			config.getServletContext().setAttribute("PROVINCIE", db.listaProvincie());
+			db.chiudiConnessione();
 		} 
 		catch (Exception e) 
 		{

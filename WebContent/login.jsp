@@ -34,7 +34,7 @@
       <form action="gestioneUtenti" method="post">
       	<input type="hidden" name="cmd" value="login">
         <div class="input-group mb-3">
-          <input type="text" class="form-control" placeholder="Email" name="txtEmail">
+          <input type="email" maxlength="40" required="true" class="form-control" placeholder="Email" name="txtEmail">
           <div class="input-group-append">
             <div class="input-group-text">
               <span class="fas fa-envelope"></span>
@@ -42,7 +42,7 @@
           </div>
         </div>
         <div class="input-group mb-3">
-          <input type="password" class="form-control" placeholder="Password" name="txtPassword">
+          <input type="password" maxlength="40" required="true" class="form-control" placeholder="Password" name="txtPassword">
           <div class="input-group-append">
             <div class="input-group-text">
               <span class="fas fa-lock"></span>
@@ -53,7 +53,7 @@
           <div class="col-8">
             <div class="icheck-primary">
               <label for="remember">
-               	&nbsp;
+               	<a href="register.jsp" class="text-center">Registrati</a>
               </label>
             </div>
           </div>
