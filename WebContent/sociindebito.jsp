@@ -1,37 +1,52 @@
+<%@page import="java.util.Properties"%>
+<%@page import="it.meucci.ManagerDB"%>
+<%@page import="java.util.ArrayList"%>
 <%@page import="it.meucci.Utente"%>
 <%@ page language="java" contentType="text/html; charset=ISO-8859-1"
     pageEncoding="ISO-8859-1"%>
 <%!
-Utente utente;
+	Utente utente;
+	ArrayList<Utente> sociInDebito;
+	Properties prop;
+	ManagerDB db;
 %>
 <%
-utente = (Utente)session.getAttribute("LOGGED_USER");
+	utente = (Utente)session.getAttribute("LOGGED_USER");
+	if(utente == null)
+	{
+		response.sendRedirect("index.jsp");
+		return;
+	}
+	
+	
+	prop = (Properties)getServletContext().getAttribute("PROPERTIES");
+	db = new ManagerDB(prop.getProperty("db.host"), prop.getProperty("db.port"), prop.getProperty("db.database"), prop.getProperty("db.user"), prop.getProperty("db.password"));
+	sociInDebito = db.sociInDebito();
 %>
 <!DOCTYPE html>
 <html>
 <head>
   <meta charset="utf-8">
   <meta http-equiv="X-UA-Compatible" content="IE=edge">
-  <title>Banca Del Tempo</title>
+  <title>Banca Del Tempo | Soci in debito</title>
   <!-- Tell the browser to be responsive to screen width -->
   <meta name="viewport" content="width=device-width, initial-scale=1">
+
   <!-- Font Awesome -->
   <link rel="stylesheet" href="plugins/fontawesome-free/css/all.min.css">
-  
-  <!-- Tempusdominus Bbootstrap 4 -->
-  <link rel="stylesheet" href="plugins/tempusdominus-bootstrap-4/css/tempusdominus-bootstrap-4.min.css">
-  <!-- iCheck -->
-  <link rel="stylesheet" href="plugins/icheck-bootstrap/icheck-bootstrap.min.css">
+  <!-- Ionicons -->
+  <link rel="stylesheet" href="https://code.ionicframework.com/ionicons/2.0.1/css/ionicons.min.css">
+  <!-- DataTables -->
+  <link rel="stylesheet" href="plugins/datatables-bs4/css/dataTables.bootstrap4.min.css">
+  <link rel="stylesheet" href="plugins/datatables-responsive/css/responsive.bootstrap4.min.css">
   <!-- Theme style -->
   <link rel="stylesheet" href="dist/css/adminlte.min.css">
-  <!-- overlayScrollbars -->
-  <link rel="stylesheet" href="plugins/overlayScrollbars/css/OverlayScrollbars.min.css">
   <!-- Google Font: Source Sans Pro -->
   <link href="https://fonts.googleapis.com/css?family=Source+Sans+Pro:300,400,400i,700" rel="stylesheet">
-  
+  <link href="dist/css/my.css" rel="stylesheet">
   <link rel="shortcut icon" href="dist/img/AdminLTELogo.png" type="image/x-icon">
 </head>
-<body class="hold-transition sidebar-mini layout-fixed">
+<body class="hold-transition sidebar-mini">
 <div class="wrapper">
 
   <!-- Navbar -->
@@ -142,7 +157,7 @@ utente = (Utente)session.getAttribute("LOGGED_USER");
         {
         %>
         	<li class="nav-item">
-	            <a href="sociindebito.jsp" class="nav-link">
+	            <a href="soci" class="nav-link active">
 	              <i class="nav-icon fas fa-history"></i>
 	              <p>
 	                Soci in debito
@@ -171,37 +186,55 @@ utente = (Utente)session.getAttribute("LOGGED_USER");
   <!-- Content Wrapper. Contains page content -->
   <div class="content-wrapper">
     <!-- Content Header (Page header) -->
-    <div class="content-header">
+    <section class="content-header">
       <div class="container-fluid">
         <div class="row mb-2">
           <div class="col-sm-6">
-            <h1 class="m-0 text-dark"><b>Banca</b> Del Tempo</h1>
-          </div><!-- /.col -->
-          <div class="col-sm-6">
-            &nbsp;
-          </div><!-- /.col -->
-        </div><!-- /.row -->
+            <h1>Soci in debito</h1>
+          </div>
+        </div>
       </div><!-- /.container-fluid -->
-    </div>
-    <!-- /.content-header -->
+    </section>
 
     <!-- Main content -->
     <section class="content">
-      <div class="container-fluid">
-      	<h4 style="padding-top: 80px; text-align: justify;">
-      		La <b>Banca</b> del Tempo è un sistema organizzato di persone che si associano per scambiare
-			servizi e/o saperi, attuando un aiuto reciproco.
-		</h4>
-		<div style="text-align: center;">
-			<img src="dist/img/agreement.svg" style="max-width: 200px;">
-		</div>
-		<h4 style="padding-bottom: 20px; text-align: justify;">
-			Attraverso la BDT le persone mettono a disposizione il proprio tempo per determinate prestazioni (effettuare
-			una piccola riparazione in casa, preparare una torta, conversare in lingua straniera, ecc.) aspettando di
-			ricevere prestazioni da altri.
-			<br><b>Non circola denaro!</b> Tutte le prestazioni sono valutate in tempo.
-		</h4>
+      <div class="row">
+        <div class="col-12">
+          <div class="card">
+            <!-- /.card-header -->
+            <div class="card-body">
+              <table id="example2" class="table table-bordered table-hover">
+                <thead>
+                <tr>
+                  <th>Nominativo</th>
+                  <th>Telefono</th>
+                  <th>Ore Fruite</th>
+                  <th>Ore Erogate</th>
+                </tr>
+                </thead>
+                <tbody>
+                <%
+                for(int i = 0; i < sociInDebito.size(); i ++)
+                {
+                %>
+                	<tr>
+		               	<td><%=sociInDebito.get(i).getNominativo() %></td>
+		               	<td><%=sociInDebito.get(i).getTelefono() %></td>
+		               	<td><%=sociInDebito.get(i).getOreFruite() %></td>
+		               	<td><%=sociInDebito.get(i).getOreErogate() %></td>
+                	</tr>
+                <%
+                }
+                %>
+                </tbody>
+              </table>
+            </div>
+            <!-- /.card-body -->
+          </div>
+          <!-- /.card -->
+        <!-- /.col -->
       </div>
+      <!-- /.row -->
     </section>
     <!-- /.content -->
   </div>
@@ -220,37 +253,34 @@ utente = (Utente)session.getAttribute("LOGGED_USER");
 
 <!-- jQuery -->
 <script src="plugins/jquery/jquery.min.js"></script>
-<!-- jQuery UI 1.11.4 -->
-<script src="plugins/jquery-ui/jquery-ui.min.js"></script>
-<!-- Resolve conflict in jQuery UI tooltip with Bootstrap tooltip -->
-<script>
-  $.widget.bridge('uibutton', $.ui.button)
-</script>
 <!-- Bootstrap 4 -->
 <script src="plugins/bootstrap/js/bootstrap.bundle.min.js"></script>
-<!-- ChartJS -->
-<script src="plugins/chart.js/Chart.min.js"></script>
-<!-- Sparkline -->
-<script src="plugins/sparklines/sparkline.js"></script>
-<!-- JQVMap -->
-<script src="plugins/jqvmap/jquery.vmap.min.js"></script>
-<script src="plugins/jqvmap/maps/jquery.vmap.usa.js"></script>
-<!-- jQuery Knob Chart -->
-<script src="plugins/jquery-knob/jquery.knob.min.js"></script>
-<!-- daterangepicker -->
-<script src="plugins/moment/moment.min.js"></script>
-<script src="plugins/daterangepicker/daterangepicker.js"></script>
-<!-- Tempusdominus Bootstrap 4 -->
-<script src="plugins/tempusdominus-bootstrap-4/js/tempusdominus-bootstrap-4.min.js"></script>
-<!-- Summernote -->
-<script src="plugins/summernote/summernote-bs4.min.js"></script>
-<!-- overlayScrollbars -->
-<script src="plugins/overlayScrollbars/js/jquery.overlayScrollbars.min.js"></script>
+<!-- DataTables -->
+<script src="plugins/datatables/jquery.dataTables.min.js"></script>
+<script src="plugins/datatables-bs4/js/dataTables.bootstrap4.min.js"></script>
+<script src="plugins/datatables-responsive/js/dataTables.responsive.min.js"></script>
+<script src="plugins/datatables-responsive/js/responsive.bootstrap4.min.js"></script>
 <!-- AdminLTE App -->
-<script src="dist/js/adminlte.js"></script>
-<!-- AdminLTE dashboard demo (This is only for demo purposes) -->
-<script src="dist/js/pages/dashboard.js"></script>
+<script src="dist/js/adminlte.min.js"></script>
 <!-- AdminLTE for demo purposes -->
 <script src="dist/js/demo.js"></script>
+<!-- page script -->
+<script>
+  $(function () {
+    $("#example1").DataTable({
+      "responsive": true,
+      "autoWidth": false,
+    });
+    $('#example2').DataTable({
+      "paging": true,
+      "lengthChange": false,
+      "searching": false,
+      "ordering": true,
+      "info": true,
+      "autoWidth": false,
+      "responsive": true,
+    });
+  });
+</script>
 </body>
 </html>

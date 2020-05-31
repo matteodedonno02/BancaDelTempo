@@ -184,6 +184,39 @@ public class ManagerDB
 	}
 	
 	
+	public ArrayList<Utente> sociInDebito()
+	{
+		ArrayList<Utente> temp = new ArrayList<Utente>();
+		
+		
+		try 
+		{
+			String query = "SELECT u.nominativo, u.telefono, t1.oreFruite, t2.oreErogate FROM "
+					+ "utenti u "
+					+ "LEFT JOIN "
+					+ "(SELECT u.idUtente as idFruitore, SUM(p.ore) as oreFruite FROM utenti u INNER JOIN prestazioni p ON u.idUtente = p.idFruitore WHERE p.statoPrestazione = 2 GROUP BY u.idUtente) t1 ON u.idUtente = t1.idFruitore "
+					+ "LEFT JOIN "
+					+ "(SELECT u.idUtente as idErogatore, SUM(p.ore) as oreErogate FROM utenti u INNER JOIN prestazioni p ON u.idUtente = p.idErogatore WHERE p.statoPrestazione = 2 GROUP BY u.idUtente) t2 ON u.idUtente = t2.idErogatore "
+					+ "WHERE oreFruite > oreErogate OR oreErogate IS NULL";
+			
+			
+			PreparedStatement ps = conn.prepareStatement(query);
+			ResultSet rs = ps.executeQuery();
+			while(rs.next())
+			{
+				temp.add(new Utente(rs.getString("nominativo"), rs.getString("telefono"), rs.getInt("oreFruite"), rs.getInt("oreErogate")));
+			}
+		}
+		catch (Exception e) 
+		{
+			e.printStackTrace();
+		}
+		
+		
+		return temp;
+	}
+	
+	
 	public void chiudiConnessione()
 	{
 		try 

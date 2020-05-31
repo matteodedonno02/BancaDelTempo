@@ -10,6 +10,8 @@ public class Utente
 	private String telefono;
 	private int tipoUtente;
 	private int idZona;
+	private int oreFruite;
+	private int oreErogate;
 	
 	
 	public Utente(int idUtente, String email, String password, String nominativo, String indirizzo, String telefono, int tipoUtente, int idZona) 
@@ -37,6 +39,16 @@ public class Utente
 	}
 	
 	
+	public Utente(String nominativo, String telefono, int oreFruite, int oreErogate) 
+	{
+		super();
+		this.nominativo = nominativo;
+		this.telefono = telefono;
+		this.oreFruite = oreFruite;
+		this.oreErogate = oreErogate;
+	}
+
+
 	public int getIdUtente() 
 	{
 		return idUtente;
@@ -130,6 +142,30 @@ public class Utente
 		this.idZona = idZona;
 	}
 	
+
+	public int getOreFruite() 
+	{
+		return oreFruite;
+	}
+
+
+	public void setOreFruite(int oreFruite) 
+	{
+		this.oreFruite = oreFruite;
+	}
+
+
+	public int getOreErogate() 
+	{
+		return oreErogate;
+	}
+
+
+	public void setOreErogate(int oreErogate) 
+	{
+		this.oreErogate = oreErogate;
+	}
+
 
 	@Override
 	public String toString() 
