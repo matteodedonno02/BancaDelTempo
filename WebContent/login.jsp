@@ -20,11 +20,12 @@
   <!-- Google Font: Source Sans Pro -->
   <link href="https://fonts.googleapis.com/css?family=Source+Sans+Pro:300,400,400i,700" rel="stylesheet">
   <link rel="stylesheet" href="plugins/sweetalert2/sweetalert2.min.css">
+  <link rel="shortcut icon" href="dist/img/AdminLTELogo.png" type="image/x-icon">
 </head>
 <body class="hold-transition login-page">
 <div class="login-box">
   <div class="login-logo">
-    <a href="index2.html"><b>Banca</b> Del Tempo</a>
+    <a href="index.jsp"><b>Banca</b> Del Tempo</a>
   </div>
   <!-- /.login-logo -->
   <div class="card">

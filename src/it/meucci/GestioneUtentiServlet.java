@@ -25,7 +25,19 @@ public class GestioneUtentiServlet extends HttpServlet
 	
 	protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException 
 	{
+		String cmd = request.getParameter("cmd");
 		
+		
+		switch (cmd) 
+		{
+			case "logout":
+				request.getSession().removeAttribute("LOGGED_USER");
+				response.sendRedirect("index.jsp");
+			break;
+	
+			default:
+			break;
+		}
 	}
 
 	

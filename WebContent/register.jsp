@@ -2,40 +2,39 @@
 <%@ page language="java" contentType="text/html; charset=utf-8"
 	pageEncoding="utf-8"%>
 <%!
-ArrayList<String> province;
+	ArrayList<String> province;
 %>
 <%
-province = (ArrayList<String>) getServletContext().getAttribute("PROVINCE");
+	province = (ArrayList<String>) getServletContext().getAttribute("PROVINCE");
 %>
 <!DOCTYPE html>
 <html>
 <head>
-<meta charset="utf-8">
-<meta http-equiv="X-UA-Compatible" content="IE=edge">
-<title>Banca Del Tempo | Registrazione</title>
-<!-- Tell the browser to be responsive to screen width -->
-<meta name="viewport" content="width=device-width, initial-scale=1">
-
-<!-- Font Awesome -->
-<link rel="stylesheet" href="plugins/fontawesome-free/css/all.min.css">
-<!-- Ionicons -->
-<link rel="stylesheet"
-	href="https://code.ionicframework.com/ionicons/2.0.1/css/ionicons.min.css">
-<!-- icheck bootstrap -->
-<link rel="stylesheet"
-	href="plugins/icheck-bootstrap/icheck-bootstrap.min.css">
-<!-- Theme style -->
-<link rel="stylesheet" href="dist/css/adminlte.min.css">
-<!-- Google Font: Source Sans Pro -->
-<link
-	href="https://fonts.googleapis.com/css?family=Source+Sans+Pro:300,400,400i,700"
-	rel="stylesheet">
-<link rel="stylesheet" href="plugins/sweetalert2/sweetalert2.min.css">
+	<meta charset="utf-8">
+	<meta http-equiv="X-UA-Compatible" content="IE=edge">
+	<title>Banca Del Tempo | Registrazione</title>
+	<!-- Tell the browser to be responsive to screen width -->
+	<meta name="viewport" content="width=device-width, initial-scale=1">
+	
+	<!-- Font Awesome -->
+	<link rel="stylesheet" href="plugins/fontawesome-free/css/all.min.css">
+	<!-- Ionicons -->
+	<link rel="stylesheet"
+		href="https://code.ionicframework.com/ionicons/2.0.1/css/ionicons.min.css">
+	<!-- icheck bootstrap -->
+	<link rel="stylesheet"
+		href="plugins/icheck-bootstrap/icheck-bootstrap.min.css">
+	<!-- Theme style -->
+	<link rel="stylesheet" href="dist/css/adminlte.min.css">
+	<!-- Google Font: Source Sans Pro -->
+	<link href="https://fonts.googleapis.com/css?family=Source+Sans+Pro:300,400,400i,700" rel="stylesheet">
+	<link rel="stylesheet" href="plugins/sweetalert2/sweetalert2.min.css">
+	<link rel="shortcut icon" href="dist/img/AdminLTELogo.png" type="image/x-icon">
 </head>
 <body class="hold-transition register-page">
 	<div class="register-box" style="width: 500px !important;">
 		<div class="register-logo">
-			<a href="index2.html"><b>Banca</b> Del Tempo</a>
+			<a href="index.jsp"><b>Banca</b> Del Tempo</a>
 		</div>
 
 		<div class="card">
@@ -91,7 +90,7 @@ province = (ArrayList<String>) getServletContext().getAttribute("PROVINCE");
 					<div class="row">
 						<div class="col-6">
 							<div class="input-group mb-3">
-								<select class="form-control" name="txtProvincia">
+								<select class="form-control select2 select2-hidden-accessible" name="txtProvincia">
 									<option selected="true" disabled="disabled">Provincia</option>    
 								<%
 								for(int i = 0; i < province.size(); i ++)
@@ -116,7 +115,7 @@ province = (ArrayList<String>) getServletContext().getAttribute("PROVINCE");
 								</select>
 								<div class="input-group-append">
 									<div class="input-group-text">
-										<span class="fas fa-search-location"></span>
+										&nbsp;
 									</div>
 								</div>
 							</div>
@@ -181,6 +180,7 @@ province = (ArrayList<String>) getServletContext().getAttribute("PROVINCE");
 	<!-- AdminLTE App -->
 	<script src="dist/js/adminlte.min.js"></script>
 	<script src="plugins/sweetalert2/sweetalert2.all.min.js"></script>
+	<script src="plugins/select2/js/select2.full.min.js"></script>
 
 
 	<script>
