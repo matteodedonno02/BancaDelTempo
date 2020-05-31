@@ -1,14 +1,17 @@
+<%@page import="it.meucci.Categoria"%>
+<%@page import="java.util.ArrayList"%>
+<%@page import="it.meucci.Zona"%>
 <%@page import="java.util.Properties"%>
 <%@page import="it.meucci.ManagerDB"%>
-<%@page import="java.util.ArrayList"%>
 <%@page import="it.meucci.Utente"%>
 <%@ page language="java" contentType="text/html; charset=ISO-8859-1"
     pageEncoding="ISO-8859-1"%>
 <%!
 	Utente utente;
-	ArrayList<Utente> sociInDebito;
+	Zona zona;
 	Properties prop;
 	ManagerDB db;
+	ArrayList<Categoria> categorie;
 %>
 <%
 	utente = (Utente)session.getAttribute("LOGGED_USER");
@@ -21,15 +24,17 @@
 	
 	prop = (Properties)getServletContext().getAttribute("PROPERTIES");
 	db = new ManagerDB(prop.getProperty("db.host"), prop.getProperty("db.port"), prop.getProperty("db.database"), prop.getProperty("db.user"), prop.getProperty("db.password"));
-	sociInDebito = db.sociInDebito();
+	zona = db.zonaDaId(utente.getIdZona());
 	db.chiudiConnessione();
+	
+	categorie = (ArrayList<Categoria>)getServletContext().getAttribute("CATEGORIE");
 %>
 <!DOCTYPE html>
 <html>
 <head>
   <meta charset="utf-8">
   <meta http-equiv="X-UA-Compatible" content="IE=edge">
-  <title>Banca Del Tempo | Soci in debito</title>
+  <title>Banca Del Tempo | Richiedi prestazione</title>
   <!-- Tell the browser to be responsive to screen width -->
   <meta name="viewport" content="width=device-width, initial-scale=1">
 
@@ -159,7 +164,7 @@
         {
         %>
         	<li class="nav-item">
-	            <a href="sociindebito.jsp" class="nav-link active">
+	            <a href="sociindebito.jsp" class="nav-link">
 	              <i class="nav-icon fas fa-history"></i>
 	              <p>
 	                Soci in debito
@@ -167,7 +172,7 @@
 	            </a>
 	          </li>
 	          <li class="nav-item">
-	            <a href="richiediprestazione.jsp" class="nav-link">
+	            <a href="richiediprestazione.jsp" class="nav-link active">
 	              <i class="nav-icon fas fa-th-list"></i>
 	              <p>
 	                Richiedi prestazione
@@ -200,7 +205,7 @@
       <div class="container-fluid">
         <div class="row mb-2">
           <div class="col-sm-6">
-            <h1>Soci in debito</h1>
+            <h1>Richiedi prestazione</h1>
           </div>
         </div>
       </div><!-- /.container-fluid -->
@@ -208,46 +213,33 @@
 
     <!-- Main content -->
     <section class="content">
-      <div class="row">
-        <div class="col-12">
-          <div class="card">
-            <!-- /.card-header -->
-            <div class="card-body">
-              <table id="example2" class="table table-bordered table-hover">
-                <thead>
-                <tr>
-                  <th>Nominativo</th>
-                  <th>Telefono</th>
-                  <th>Ore fruite</th>
-                  <th>Ore erogate</th>
-                  <th>Ore di debito</th>
-                </tr>
-                </thead>
-                <tbody>
-                <%
-                for(int i = 0; i < sociInDebito.size(); i ++)
-                {
-                %>
-                	<tr>
-		               	<td><%=sociInDebito.get(i).getNominativo() %></td>
-		               	<td><%=sociInDebito.get(i).getTelefono() %></td>
-		               	<td><%=sociInDebito.get(i).getOreFruite() %></td>
-		               	<td><%=sociInDebito.get(i).getOreErogate() %></td>
-		               	<td><%=sociInDebito.get(i).getOreFruite() -  sociInDebito.get(i).getOreErogate()%></td>
-                	</tr>
-                <%
-                }
-                %>
-                </tbody>
-              </table>
-            </div>
-            <!-- /.card-body -->
-          </div>
-          <!-- /.card -->
-        <!-- /.col -->
+      <div class="container-fluid">
+      	<h4>La tua zona : <b><%=zona.getDescrizione() %></b></h4>
+      	<%=zona.getHtmlMappa() %>
+      	<form action="gestionePrestazioni" method="post" autocomplete="off">
+      		<input type="hidden" name="cmd" value="selezioneCategoria">
+      		<div class="input-group mb-3 col-6">
+				<select class="form-control" name="txtComune" required="true">
+					<option selected="true" disabled="disabled">Categoria</option>
+					<%
+					for(int i = 0; i < categorie.size(); i ++)
+					{
+					%>
+						<option><%=categorie.get(i).getDescrizione() %></option>
+					<%
+					}
+					%>
+				</select>
+<!-- 				<div class="input-group-append"> -->
+<!-- 					<div class="input-group-text"> -->
+<!-- 						&nbsp; -->
+<!-- 					</div> -->
+<!-- 				</div> -->
+			</div>
+      	</form>
       </div>
-      <!-- /.row -->
     </section>
+      	
     <!-- /.content -->
   </div>
   <!-- /.content-wrapper -->

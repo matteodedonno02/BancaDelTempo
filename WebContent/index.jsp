@@ -150,6 +150,14 @@ utente = (Utente)session.getAttribute("LOGGED_USER");
 	            </a>
 	          </li>
 	          <li class="nav-item">
+	            <a href="richiediprestazione.jsp" class="nav-link">
+	              <i class="nav-icon fas fa-th-list"></i>
+	              <p>
+	                Richiedi prestazione
+	              </p>
+	            </a>
+	          </li>
+	          <li class="nav-item">
 		          <a href="gestioneUtenti?cmd=logout" class="nav-link">
 		              <i class="nav-icon fas fa-sign-out-alt"></i>
 		              <p>

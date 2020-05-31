@@ -217,6 +217,57 @@ public class ManagerDB
 	}
 	
 	
+	public Zona zonaDaId(int idZona)
+	{
+		Zona temp = null;
+		
+		
+		try 
+		{
+			String query = "SELECT * FROM zone WHERE idZona = ?";
+			PreparedStatement ps = conn.prepareStatement(query);
+			ps.setInt(1, idZona);
+			ResultSet rs = ps.executeQuery();
+			if(rs.next())
+			{
+				temp = new Zona(rs.getInt("idZona"), rs.getString("descrizione"), rs.getString("htmlMappa"));
+			}
+		} 
+		catch (Exception e)
+		{
+			e.printStackTrace();
+		}
+		
+		
+		return temp;
+	}
+	
+	
+	public ArrayList<Categoria> categorie()
+	{
+		ArrayList<Categoria> categorie = new ArrayList<Categoria>();
+		
+		
+		try 
+		{
+			String query = "SELECT * FROM categorie";
+			PreparedStatement ps = conn.prepareStatement(query);
+			ResultSet rs = ps.executeQuery();
+			while(rs.next())
+			{
+				categorie.add(new Categoria(rs.getInt("idCategoria"), rs.getString("descrizione")));
+			}
+		}
+		catch (Exception e) 
+		{
+			e.printStackTrace();
+		}
+		
+		
+		return categorie;
+	}
+	
+	
 	public void chiudiConnessione()
 	{
 		try 
