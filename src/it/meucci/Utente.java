@@ -16,7 +16,6 @@ public class Utente
 	
 	public Utente(int idUtente, String email, String password, String nominativo, String indirizzo, String telefono, int tipoUtente, int idZona) 
 	{
-		super();
 		this.idUtente = idUtente;
 		this.email = email;
 		this.password = password;
@@ -30,7 +29,6 @@ public class Utente
 	
 	public Utente(String email, String password, String nominativo, String indirizzo, String telefono) 
 	{
-		super();
 		this.email = email;
 		this.password = password;
 		this.nominativo = nominativo;
@@ -41,11 +39,18 @@ public class Utente
 	
 	public Utente(String nominativo, String telefono, int oreFruite, int oreErogate) 
 	{
-		super();
 		this.nominativo = nominativo;
 		this.telefono = telefono;
 		this.oreFruite = oreFruite;
 		this.oreErogate = oreErogate;
+	}
+	
+	
+	public Utente(String nominativo, String indirizzo, String telefono) 
+	{
+		this.nominativo = nominativo;
+		this.indirizzo = indirizzo;
+		this.telefono = telefono;
 	}
 
 

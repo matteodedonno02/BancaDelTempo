@@ -291,6 +291,15 @@
       "info": true,
       "autoWidth": false,
       "responsive": true,
+      "language": 
+      {
+          "zeroRecords": "Nessun dato trovato",
+          "paginate": 
+          {
+          	"previous": "Precedente",
+          	"next": "Successivo"
+          }
+      }
     });
   });
 </script>

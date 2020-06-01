@@ -212,31 +212,49 @@
     </section>
 
     <!-- Main content -->
-    <section class="content">
+    <section class="content" style="padding-bottom: 40px;">
       <div class="container-fluid">
-      	<h4>La tua zona : <b><%=zona.getDescrizione() %></b></h4>
-      	<%=zona.getHtmlMappa() %>
-      	<form action="gestionePrestazioni" method="post" autocomplete="off">
+      	<h4 style="padding-bottom: 20px;">La tua zona : <b><%=zona.getDescrizione() %></b></h4>
+      	<%
+      	if(zona.getHtmlMappa() == null)
+      	{
+      	%>
+      		<h5>Mappa non disponibile</h5>
+      	<%
+      	}
+      	else
+      	{
+      	%>
+          	<%=zona.getHtmlMappa() %>
+        <%
+      	}
+      	%>
+      	<form id="formCategoria" action="gestionePrestazioni" method="post" autocomplete="off">
       		<input type="hidden" name="cmd" value="selezioneCategoria">
-      		<div class="input-group mb-3 col-6">
-				<select class="form-control" name="txtComune" required="true">
-					<option selected="true" disabled="disabled">Categoria</option>
-					<%
-					for(int i = 0; i < categorie.size(); i ++)
-					{
-					%>
-						<option><%=categorie.get(i).getDescrizione() %></option>
-					<%
-					}
-					%>
-				</select>
-<!-- 				<div class="input-group-append"> -->
-<!-- 					<div class="input-group-text"> -->
-<!-- 						&nbsp; -->
-<!-- 					</div> -->
-<!-- 				</div> -->
+      		<div class="input-group mb-3">
+					<div class="col-6">
+						<select class="form-control" name="txtCategoria" required="true">
+							<option selected="true" disabled="disabled">Categoria</option>
+							<%
+							for(int i = 0; i < categorie.size(); i ++)
+							{
+							%>
+								<option><%=categorie.get(i).getDescrizione() %></option>
+							<%
+							}
+							%>
+						</select>
+					</div>
+					<div class="4">
+						<input type="submit" class="btn btn-block btn-default btn-sm" value="Cerca">
+					</div>
 			</div>
       	</form>
+      	
+      	
+      	<div id="tabellaRisultati">
+      		
+      	</div>
       </div>
     </section>
       	
@@ -268,23 +286,44 @@
 <script src="dist/js/adminlte.min.js"></script>
 <!-- AdminLTE for demo purposes -->
 <script src="dist/js/demo.js"></script>
+<script src="http://malsup.github.com/jquery.form.js"></script>
 <!-- page script -->
 <script>
-  $(function () {
-    $("#example1").DataTable({
-      "responsive": true,
-      "autoWidth": false,
-    });
-    $('#example2').DataTable({
-      "paging": true,
-      "lengthChange": false,
-      "searching": false,
-      "ordering": true,
-      "info": true,
-      "autoWidth": false,
-      "responsive": true,
-    });
-  });
+	$("#formCategoria").ajaxForm(
+	{
+		url: "gestionePrestazioni",
+		type: "post",
+		success : function(result) 
+		{
+			$("#tabellaRisultati").html(result);
+			$(function () 
+					{
+					    $("#example1").DataTable(	
+					    {
+					      "responsive": true,
+					      "autoWidth": false,
+					    });
+					    $('#example2').DataTable({
+					      "paging": true,
+					      "lengthChange": false,
+					      "searching": false,
+					      "ordering": true,
+					      "info": true,
+					      "autoWidth": false,
+					      "responsive": true,
+					      "language": 
+					      {
+					            "zeroRecords": "Nessun dato trovato",
+					            "paginate": 
+					            {
+					            	"previous": "Precedente",
+					            	"next": "Successivo"
+					            }
+					        }
+					    });
+				  	});
+		}
+	});
 </script>
 </body>
 </html>

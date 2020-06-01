@@ -268,6 +268,38 @@ public class ManagerDB
 	}
 	
 	
+	public ArrayList<Utente> sociDaCategoriaEZona(int idCategoria, int idZona)
+	{
+		ArrayList<Utente> temp = new ArrayList<Utente>();
+		
+		
+		try 
+		{
+			String query = "SELECT * FROM ((utenti u INNER JOIN zone z ON u.idZona = z.idZona) "
+					+ "INNER JOIN categorie_utenti cu ON u.idUtente = cu.IdUtente) "
+					+ "INNER JOIN categorie c ON c.idCategoria = cu.idCategoria "
+					+ "WHERE c.idCategoria = ? AND z.idZona = ?";
+			PreparedStatement ps = conn.prepareStatement(query);
+			ps.setInt(1, idCategoria);
+			ps.setInt(2, idZona);
+			
+			
+			ResultSet rs = ps.executeQuery();
+			while(rs.next())
+			{
+				temp.add(new Utente(rs.getString("nominativo"), rs.getString("indirizzo"), rs.getString("telefono")));
+			}
+		} 
+		catch (Exception e) 
+		{
+			e.printStackTrace();
+		}
+		
+		
+		return temp;
+	}
+	
+	
 	public void chiudiConnessione()
 	{
 		try 
