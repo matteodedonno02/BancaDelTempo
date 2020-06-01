@@ -55,7 +55,7 @@ public class GestionePrestazioniServlet extends HttpServlet
 				}
 				
 				
-				ArrayList<Utente> temp = db.sociDaCategoriaEZona(idCategoria, ((Utente)request.getSession().getAttribute("LOGGED_USER")).getIdZona());
+				ArrayList<Utente> temp = db.sociDaCategoriaEZona(idCategoria, ((Utente)request.getSession().getAttribute("LOGGED_USER")).getIdZona(), ((Utente)request.getSession().getAttribute("LOGGED_USER")).getIdUtente());
 				
 				
 				String html = "<div class='card'>" + 

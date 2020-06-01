@@ -1,5 +1,7 @@
 package it.meucci;
 
+import java.util.ArrayList;
+
 public class Utente 
 {
 	private int idUtente;
@@ -12,6 +14,7 @@ public class Utente
 	private int idZona;
 	private int oreFruite;
 	private int oreErogate;
+	private ArrayList<Categoria> categorie;
 	
 	
 	public Utente(int idUtente, String email, String password, String nominativo, String indirizzo, String telefono, int tipoUtente, int idZona) 
@@ -51,6 +54,15 @@ public class Utente
 		this.nominativo = nominativo;
 		this.indirizzo = indirizzo;
 		this.telefono = telefono;
+	}
+	
+	
+	public Utente(String nominativo, String indirizzo, String telefono, ArrayList<Categoria> categorie) 
+	{
+		this.nominativo = nominativo;
+		this.indirizzo = indirizzo;
+		this.telefono = telefono;
+		this.categorie = categorie;
 	}
 
 
@@ -169,6 +181,18 @@ public class Utente
 	public void setOreErogate(int oreErogate) 
 	{
 		this.oreErogate = oreErogate;
+	}
+
+
+	public ArrayList<Categoria> getCategorie() 
+	{
+		return categorie;
+	}
+
+
+	public void setCategorie(ArrayList<Categoria> categorie) 
+	{
+		this.categorie = categorie;
 	}
 
 

@@ -6,7 +6,7 @@
     pageEncoding="ISO-8859-1"%>
 <%!
 	Utente utente;
-	ArrayList<Utente> sociInDebito;
+	ArrayList<Utente> sociSegreteria;
 	Properties prop;
 	ManagerDB db;
 %>
@@ -21,7 +21,7 @@
 	
 	prop = (Properties)getServletContext().getAttribute("PROPERTIES");
 	db = new ManagerDB(prop.getProperty("db.host"), prop.getProperty("db.port"), prop.getProperty("db.database"), prop.getProperty("db.user"), prop.getProperty("db.password"));
-	sociInDebito = db.sociInDebito();
+	sociSegreteria = db.sociSegreteria();
 	db.chiudiConnessione();
 %>
 <!DOCTYPE html>
@@ -29,7 +29,7 @@
 <head>
   <meta charset="utf-8">
   <meta http-equiv="X-UA-Compatible" content="IE=edge">
-  <title>Banca Del Tempo | Soci in debito</title>
+  <title>Banca Del Tempo | Soci segreteria</title>
   <!-- Tell the browser to be responsive to screen width -->
   <meta name="viewport" content="width=device-width, initial-scale=1">
 
@@ -159,7 +159,7 @@
         {
         %>
         	<li class="nav-item">
-	            <a href="sociindebito.jsp" class="nav-link active">
+	            <a href="sociindebito.jsp" class="nav-link">
 	              <i class="nav-icon fas fa-history"></i>
 	              <p>
 	                Soci in debito
@@ -175,7 +175,7 @@
 	            </a>
 	          </li>
 	          <li class="nav-item">
-	            <a href="socisegreteria.jsp" class="nav-link">
+	            <a href="socisegreteria.jsp" class="nav-link active">
 	              <i class="nav-icon fas fa-print"></i>
 	              <p>
 	                Soci segreteria
@@ -208,7 +208,8 @@
       <div class="container-fluid">
         <div class="row mb-2">
           <div class="col-sm-6">
-            <h1>Soci in debito</h1>
+            <h1>Soci segreteria</h1>
+            <p>Di seguito l'elenco dei soci che fanno parte della segreteria e che offrono anche altri tipi di prestazione</p>
           </div>
         </div>
       </div><!-- /.container-fluid -->
@@ -225,23 +226,30 @@
                 <thead>
                 <tr>
                   <th>Nominativo</th>
+                  <th>Indirizzo</th>
                   <th>Telefono</th>
-                  <th>Ore fruite</th>
-                  <th>Ore erogate</th>
-                  <th>Ore di debito</th>
+                  <th>Altre Categorie</th>
                 </tr>
                 </thead>
                 <tbody>
                 <%
-                for(int i = 0; i < sociInDebito.size(); i ++)
+                for(int i = 0; i < sociSegreteria.size(); i ++)
                 {
                 %>
                 	<tr>
-		               	<td><%=sociInDebito.get(i).getNominativo() %></td>
-		               	<td><%=sociInDebito.get(i).getTelefono() %></td>
-		               	<td><%=sociInDebito.get(i).getOreFruite() %></td>
-		               	<td><%=sociInDebito.get(i).getOreErogate() %></td>
-		               	<td><%=sociInDebito.get(i).getOreFruite() -  sociInDebito.get(i).getOreErogate()%></td>
+		               	<td><%=sociSegreteria.get(i).getNominativo() %></td>
+		               	<td><%=sociSegreteria.get(i).getIndirizzo() %></td>
+		               	<td><%=sociSegreteria.get(i).getTelefono() %></td>
+		               	<td>
+		               	<%
+		               	for(int j = 0; j < sociSegreteria.get(i).getCategorie().size(); j ++)
+		               	{
+		               	%>
+		               		<%=sociSegreteria.get(i).getCategorie().get(j).getDescrizione() %><br>
+		               	<%
+		               	}
+		               	%>
+		               	</td>
                 	</tr>
                 <%
                 }

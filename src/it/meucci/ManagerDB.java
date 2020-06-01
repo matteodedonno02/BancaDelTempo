@@ -197,7 +197,7 @@ public class ManagerDB
 					+ "(SELECT u.idUtente as idFruitore, SUM(p.ore) as oreFruite FROM utenti u INNER JOIN prestazioni p ON u.idUtente = p.idFruitore WHERE p.statoPrestazione = 2 GROUP BY u.idUtente) t1 ON u.idUtente = t1.idFruitore "
 					+ "LEFT JOIN "
 					+ "(SELECT u.idUtente as idErogatore, SUM(p.ore) as oreErogate FROM utenti u INNER JOIN prestazioni p ON u.idUtente = p.idErogatore WHERE p.statoPrestazione = 2 GROUP BY u.idUtente) t2 ON u.idUtente = t2.idErogatore "
-					+ "WHERE oreFruite > oreErogate OR oreErogate IS NULL";
+					+ "WHERE oreFruite > oreErogate OR (oreErogate IS NULL AND oreFruite IS NOT NULL)";
 			
 			
 			PreparedStatement ps = conn.prepareStatement(query);
@@ -268,7 +268,7 @@ public class ManagerDB
 	}
 	
 	
-	public ArrayList<Utente> sociDaCategoriaEZona(int idCategoria, int idZona)
+	public ArrayList<Utente> sociDaCategoriaEZona(int idCategoria, int idZona, int idUtente)
 	{
 		ArrayList<Utente> temp = new ArrayList<Utente>();
 		
@@ -278,16 +278,65 @@ public class ManagerDB
 			String query = "SELECT * FROM ((utenti u INNER JOIN zone z ON u.idZona = z.idZona) "
 					+ "INNER JOIN categorie_utenti cu ON u.idUtente = cu.IdUtente) "
 					+ "INNER JOIN categorie c ON c.idCategoria = cu.idCategoria "
-					+ "WHERE c.idCategoria = ? AND z.idZona = ?";
+					+ "WHERE c.idCategoria = ? AND z.idZona = ? AND u.idUtente <> ?";
 			PreparedStatement ps = conn.prepareStatement(query);
 			ps.setInt(1, idCategoria);
 			ps.setInt(2, idZona);
+			ps.setInt(3, idUtente);
 			
 			
 			ResultSet rs = ps.executeQuery();
 			while(rs.next())
 			{
 				temp.add(new Utente(rs.getString("nominativo"), rs.getString("indirizzo"), rs.getString("telefono")));
+			}
+		} 
+		catch (Exception e) 
+		{
+			e.printStackTrace();
+		}
+		
+		
+		return temp;
+	}
+	
+	
+	public ArrayList<Utente> sociSegreteria()
+	{
+		ArrayList<Utente> temp = new ArrayList<Utente>();
+		
+		
+		try 
+		{
+			String query = "SELECT * FROM utenti u "
+					+ "INNER JOIN "
+					+ "categorie_utenti cu ON u.idUtente = cu.IdUtente "
+					+ "WHERE u.idUtente IN "
+					+ "(SELECT idUtente FROM categorie_utenti WHERE idCategoria = 6) "
+					+ "GROUP BY u.idUtente "
+					+ "HAVING COUNT(*) > 1 ";
+			PreparedStatement ps = conn.prepareStatement(query);
+			
+			
+			ResultSet rs = ps.executeQuery();
+			while(rs.next())
+			{
+				ArrayList<Categoria> categorie = new ArrayList<Categoria>();
+				String query2 = "SELECT * FROM (utenti u INNER JOIN categorie_utenti cu ON u.idUtente = cu.IdUtente) "
+						+ "INNER JOIN categorie c ON c.idCategoria = cu.idCategoria "
+						+ "WHERE u.idUtente = ? AND c.idCategoria <> 6";
+				PreparedStatement ps2 = conn.prepareStatement(query2);
+				ps2.setInt(1, rs.getInt("idUtente"));
+				
+				
+				ResultSet rs2 = ps2.executeQuery();
+				while(rs2.next())
+				{
+					categorie.add(new Categoria(rs2.getInt("idCategoria"), rs2.getString("descrizione")));
+				}
+				
+				
+				temp.add(new Utente(rs.getString("nominativo"), rs.getString("indirizzo"), rs.getString("telefono"), categorie));
 			}
 		} 
 		catch (Exception e) 

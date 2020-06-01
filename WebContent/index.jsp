@@ -158,6 +158,14 @@ utente = (Utente)session.getAttribute("LOGGED_USER");
 	            </a>
 	          </li>
 	          <li class="nav-item">
+	            <a href="socisegreteria.jsp" class="nav-link">
+	              <i class="nav-icon fas fa-print"></i>
+	              <p>
+	                Soci segreteria
+	              </p>
+	            </a>
+	          </li>
+	          <li class="nav-item">
 		          <a href="gestioneUtenti?cmd=logout" class="nav-link">
 		              <i class="nav-icon fas fa-sign-out-alt"></i>
 		              <p>
