@@ -122,7 +122,7 @@
         else
         {
         %>
-        	<a href="" class="d-block"><%=utente.getNominativo() %></a>
+        	<a href="profilo.jsp" class="d-block"><%=utente.getNominativo() %></a>
         <%
         }
         %>

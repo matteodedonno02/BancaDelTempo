@@ -349,6 +349,97 @@ public class ManagerDB
 	}
 	
 	
+	public ArrayList<Prestazione> prestazioni(int idUtente)
+	{
+		ArrayList<Prestazione> temp = new ArrayList<Prestazione>();
+		
+		
+		try 
+		{
+			String query = "SELECT * FROM utenti u "
+					+ "INNER JOIN "
+					+ "prestazioni p ON u.idUtente = p.idErogatore ORDER BY p.ore DESC "
+					+ "WHERE u.idUtente = ?";
+			PreparedStatement ps = conn.prepareStatement(query);
+			ps.setInt(1, idUtente);
+			
+			
+			ResultSet rs = ps.executeQuery();
+			while(rs.next())
+			{
+				temp.add(new Prestazione(rs.getDate("data"), rs.getInt("ore"), rs.getString("descrizione")));
+			}
+		} 
+		catch (Exception e)
+		{
+			e.printStackTrace();
+		}
+		
+		
+		return temp;
+	}
+	
+	
+	public int oreErogate(int idUtente)
+	{
+		int oreErogate = 0;
+		
+		
+		try 
+		{
+			String query = "SELECT SUM(p.ore) oreErogate FROM utenti u "
+					+ "INNER JOIN "
+					+ "prestazioni p ON u.idUtente = p.idErogatore WHERE u.idUtente = ? GROUP BY u.idUtente";
+			PreparedStatement ps = conn.prepareStatement(query);
+			ps.setInt(1, idUtente);
+			
+			
+			ResultSet rs = ps.executeQuery();
+			if(rs.next())
+			{
+				oreErogate = rs.getInt("oreErogate");
+			}
+		}
+		catch (Exception e) 
+		{
+			e.printStackTrace();
+		}
+		
+		
+		return oreErogate;
+	}
+	
+	
+	public int oreFruite(int idUtente)
+	{
+		int oreFruite = 0;
+		
+		
+		try 
+		{
+			String query = "SELECT SUM(p.ore) oreFruite FROM utenti u "
+					+ "INNER JOIN "
+					+ "prestazioni p ON u.idUtente = p.idFruitore WHERE u.idUtente = ? GROUP BY u.idUtente";
+			PreparedStatement ps = conn.prepareStatement(query);
+			ps.setInt(1, idUtente);
+			
+			
+			ResultSet rs = ps.executeQuery();
+			if(rs.next())
+			{
+				oreFruite = rs.getInt("oreFruite");
+			}
+		}
+		catch (Exception e) 
+		{
+			e.printStackTrace();
+		}
+		
+		
+		return oreFruite;
+	}
+	
+	
 	public void chiudiConnessione()
 	{
 		try 

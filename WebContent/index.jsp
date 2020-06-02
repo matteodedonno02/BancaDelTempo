@@ -2,10 +2,10 @@
 <%@ page language="java" contentType="text/html; charset=ISO-8859-1"
     pageEncoding="ISO-8859-1"%>
 <%!
-Utente utente;
+	Utente utente;
 %>
 <%
-utente = (Utente)session.getAttribute("LOGGED_USER");
+	utente = (Utente)session.getAttribute("LOGGED_USER");
 %>
 <!DOCTYPE html>
 <html>
@@ -106,7 +106,7 @@ utente = (Utente)session.getAttribute("LOGGED_USER");
         else
         {
         %>
-        	<a href="" class="d-block"><%=utente.getNominativo() %></a>
+        	<a href="profilo.jsp" class="d-block"><%=utente.getNominativo() %></a>
         <%
         }
         %>
@@ -132,7 +132,7 @@ utente = (Utente)session.getAttribute("LOGGED_USER");
 	          <a href="register.jsp" class="nav-link">
 	              <i class="nav-icon fas fa-user-plus"></i>
 	              <p>
-	                Registrati
+ 	              	Registrati
 	              </p>
 	          </a>
           	</li>
