@@ -40,6 +40,15 @@ public class Utente
 	}
 	
 	
+	public Utente(String email, String password, String nominativo, String telefono) 
+	{
+		this.email = email;
+		this.password = password;
+		this.nominativo = nominativo;
+		this.telefono = telefono;
+	}
+	
+	
 	public Utente(String nominativo, String telefono, int oreFruite, int oreErogate) 
 	{
 		this.nominativo = nominativo;

@@ -6,22 +6,22 @@
     pageEncoding="ISO-8859-1"%>
 <%!
 	Utente utente;
-	ArrayList<Utente> sociInDebito;
+	ArrayList<Utente> utenti;
 	Properties prop;
 	ManagerDB db;
 %>
 <%
 	utente = (Utente)session.getAttribute("LOGGED_USER");
-	if(utente == null)
+	if(utente == null || utente.getTipoUtente() == 0)
 	{
-		response.sendRedirect("index.jsp");
+		response.sendRedirect("../index.jsp");
 		return;
 	}
 	
 	
 	prop = (Properties)getServletContext().getAttribute("PROPERTIES");
 	db = new ManagerDB(prop.getProperty("db.host"), prop.getProperty("db.port"), prop.getProperty("db.database"), prop.getProperty("db.user"), prop.getProperty("db.password"));
-	sociInDebito = db.sociInDebito();
+	utenti = db.listaUtenti();
 	db.chiudiConnessione();
 %>
 <!DOCTYPE html>
@@ -34,18 +34,18 @@
   <meta name="viewport" content="width=device-width, initial-scale=1">
 
   <!-- Font Awesome -->
-  <link rel="stylesheet" href="plugins/fontawesome-free/css/all.min.css">
+  <link rel="stylesheet" href="../plugins/fontawesome-free/css/all.min.css">
   <!-- Ionicons -->
   <link rel="stylesheet" href="https://code.ionicframework.com/ionicons/2.0.1/css/ionicons.min.css">
   <!-- DataTables -->
-  <link rel="stylesheet" href="plugins/datatables-bs4/css/dataTables.bootstrap4.min.css">
-  <link rel="stylesheet" href="plugins/datatables-responsive/css/responsive.bootstrap4.min.css">
+  <link rel="stylesheet" href="../plugins/datatables-bs4/css/dataTables.bootstrap4.min.css">
+  <link rel="stylesheet" href="../plugins/datatables-responsive/css/responsive.bootstrap4.min.css">
   <!-- Theme style -->
-  <link rel="stylesheet" href="dist/css/adminlte.min.css">
+  <link rel="stylesheet" href="../dist/css/adminlte.min.css">
   <!-- Google Font: Source Sans Pro -->
   <link href="https://fonts.googleapis.com/css?family=Source+Sans+Pro:300,400,400i,700" rel="stylesheet">
-  <link href="dist/css/my.css" rel="stylesheet">
-  <link rel="shortcut icon" href="dist/img/AdminLTELogo.png" type="image/x-icon">
+  <link href="../dist/css/my.css" rel="stylesheet">
+  <link rel="shortcut icon" href="../dist/img/AdminLTELogo.png" type="image/x-icon">
 </head>
 <body class="hold-transition sidebar-mini">
 <div class="wrapper">
@@ -76,7 +76,7 @@
 	          <a href="#" class="dropdown-item">
 	            <!-- Message Start -->
 	            <div class="media">
-	              <img src="dist/img/user1-128x128.jpg" alt="User Avatar" class="img-size-50 mr-3 img-circle">
+	              <img src="../dist/img/user1-128x128.jpg" alt="User Avatar" class="img-size-50 mr-3 img-circle">
 	              <div class="media-body">
 	                <h3 class="dropdown-item-title">
 	                  Brad Diesel
@@ -100,7 +100,7 @@
   <aside class="main-sidebar sidebar-dark-primary elevation-4">
     <!-- Brand Logo -->
     <a href="index.jsp" class="brand-link">
-      <img src="dist/img/AdminLTELogo.png" alt="AdminLTE Logo" class="brand-image img-circle elevation-3" style="opacity: .8">
+      <img src="../dist/img/AdminLTELogo.png" alt="AdminLTE Logo" class="brand-image img-circle elevation-3" style="opacity: .8">
       <span class="brand-text font-weight-light"><b>Banca</b> Del Tempo</span>
     </a>
 
@@ -191,20 +191,6 @@
 		          </a>
 	          </li>
         <%
-	        if(utente.getTipoUtente() == 1)
-	    	{
-	    	%>
-	    		<li class="nav-header">SEZIONE AMMINISTRATORE</li>
-	    		<li class="nav-item">
-		            <a href="admin/utenti.jsp" class="nav-link">
-		              <i class="nav-icon fas fa-users"></i>
-		              <p>
-		                Lista utenti
-		              </p>
-		            </a>
-		          </li>
-	    	<%
-	    	}
         }
         %>
           
@@ -246,21 +232,21 @@
                 </tr>
                 </thead>
                 <tbody>
-                <%
-                for(int i = 0; i < sociInDebito.size(); i ++)
-                {
-                %>
-                	<tr>
-		               	<td><%=sociInDebito.get(i).getNominativo() %></td>
-		               	<td><%=sociInDebito.get(i).getTelefono() %></td>
-		               	<td><%=sociInDebito.get(i).getOreFruite() %></td>
-		               	<td><%=sociInDebito.get(i).getOreErogate() %></td>
-		               	<td><%=sociInDebito.get(i).getOreFruite() -  sociInDebito.get(i).getOreErogate()%></td>
-                	</tr>
-                <%
-                }
-                %>
-                </tbody>
+<%--                 <% --%>
+//                 for(int i = 0; i < sociInDebito.size(); i ++)
+//                 {
+<%--                 %> --%>
+<!--                 	<tr> -->
+<%-- 		               	<td><input class="clearinput" type="text" value="<%=sociInDebito.get(i).getNominativo() %>"></input></td> --%>
+<%-- 		               	<td><%=sociInDebito.get(i).getTelefono() %></td> --%>
+<%-- 		               	<td><%=sociInDebito.get(i).getOreFruite() %></td> --%>
+<%-- 		               	<td><%=sociInDebito.get(i).getOreErogate() %></td> --%>
+<%-- 		               	<td><%=sociInDebito.get(i).getOreFruite() -  sociInDebito.get(i).getOreErogate()%></td> --%>
+<!--                 	</tr> -->
+<%--                 <% --%>
+//                 }
+<%--                 %> --%>
+<!--                 </tbody> -->
               </table>
             </div>
             <!-- /.card-body -->
@@ -286,18 +272,18 @@
 <!-- ./wrapper -->
 
 <!-- jQuery -->
-<script src="plugins/jquery/jquery.min.js"></script>
+<script src="../plugins/jquery/jquery.min.js"></script>
 <!-- Bootstrap 4 -->
-<script src="plugins/bootstrap/js/bootstrap.bundle.min.js"></script>
+<script src="../plugins/bootstrap/js/bootstrap.bundle.min.js"></script>
 <!-- DataTables -->
-<script src="plugins/datatables/jquery.dataTables.min.js"></script>
-<script src="plugins/datatables-bs4/js/dataTables.bootstrap4.min.js"></script>
-<script src="plugins/datatables-responsive/js/dataTables.responsive.min.js"></script>
-<script src="plugins/datatables-responsive/js/responsive.bootstrap4.min.js"></script>
+<script src="../plugins/datatables/jquery.dataTables.min.js"></script>
+<script src="../plugins/datatables-bs4/js/dataTables.bootstrap4.min.js"></script>
+<script src="../plugins/datatables-responsive/js/dataTables.responsive.min.js"></script>
+<script src="../plugins/datatables-responsive/js/responsive.bootstrap4.min.js"></script>
 <!-- AdminLTE App -->
-<script src="dist/js/adminlte.min.js"></script>
+<script src="../dist/js/adminlte.min.js"></script>
 <!-- AdminLTE for demo purposes -->
-<script src="dist/js/demo.js"></script>
+<script src="../dist/js/demo.js"></script>
 <!-- page script -->
 <script>
   $(function () {

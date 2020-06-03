@@ -1,6 +1,7 @@
 package it.meucci;
 
 import java.io.IOException;
+import java.text.Normalizer;
 import java.util.ArrayList;
 import java.util.Properties;
 
@@ -119,6 +120,120 @@ public class GestioneUtentiServlet extends HttpServlet
 				{
 					response.sendRedirect("register.jsp?errore=erroreRegistrazione");
 				}
+			}
+			break;
+			
+			
+			case "aggiungiCategoria":
+			{
+				int idUtente = Integer.parseInt(request.getParameter("idUtente"));
+				int idCategoria = Integer.parseInt(request.getParameter("idCategoria"));
+				
+				
+				db.aggiungiCategoria(idUtente, idCategoria);
+				ArrayList<Categoria> categorie;
+				ArrayList<Categoria> categorieUtente;
+				categorie = db.categorie();
+				categorieUtente = db.categorieUtente(idUtente);
+				db.chiudiConnessione();
+				
+				
+				for(int i = 0; i < categorieUtente.size(); i ++)
+				{
+					for(int j = 0; j < categorie.size(); j ++)
+					{
+						if(categorieUtente.get(i).getIdCategoria() == categorie.get(j).getIdCategoria())
+						{
+							categorie.remove(j);
+						}
+					}
+				}
+				
+				
+				String html = "<h5>Categorie disponibili</h5>";
+				for(int i = 0; i < categorie.size(); i ++)
+				{
+					html += "<div class='row' style='margin-bottom: 10px;'>"
+							+ "<div class='col-2'>"
+							+ "<button id='" + categorie.get(i).getIdCategoria() + "' type='button' class='aggiungiCategoria btn btn-primary btn-block'><i class='fas fa-plus-circle'></i></button>"
+							+ "</div>"
+							+ "<div class='col-10'>"
+							+ categorie.get(i).getDescrizione()
+							+ "</div>"
+							+ "</div>";
+				}
+          		html += "<h5>Le tue categorie</h5>";
+          		for(int i = 0; i < categorieUtente.size(); i ++)
+          		{
+          			html += "<div class='row' style='margin-bottom: 10px;'>"
+          					+ "<div class='col-2'>"
+          					+ "<button id='" + categorieUtente.get(i).getIdCategoria() + "' type='button' class='rimuoviCategoria btn btn-primary btn-block'><i class='fas fa-minus-circle'></i></button>"
+          					+ "</div>"
+          					+ "<div class='col-10'>"
+          					+ categorieUtente.get(i).getDescrizione()
+          					+ "</div>"
+          					+ "</div>";
+          		}
+				
+				
+				response.getWriter().write(html);
+			}
+			break;
+			
+			
+			case "rimuoviCategoria":
+			{
+				int idUtente = Integer.parseInt(request.getParameter("idUtente"));
+				int idCategoria = Integer.parseInt(request.getParameter("idCategoria"));
+				
+				
+				db.rimuoviCategoria(idUtente, idCategoria);
+				ArrayList<Categoria> categorie;
+				ArrayList<Categoria> categorieUtente;
+				categorie = db.categorie();
+				categorieUtente = db.categorieUtente(idUtente);
+				db.chiudiConnessione();
+				
+				
+				for(int i = 0; i < categorieUtente.size(); i ++)
+				{
+					for(int j = 0; j < categorie.size(); j ++)
+					{
+						if(categorieUtente.get(i).getIdCategoria() == categorie.get(j).getIdCategoria())
+						{
+							categorie.remove(j);
+						}
+					}
+				}
+				
+				
+				String html = "<h5>Categorie disponibili</h5>";
+				for(int i = 0; i < categorie.size(); i ++)
+				{
+					html += "<div class='row' style='margin-bottom: 10px;'>"
+							+ "<div class='col-2'>"
+							+ "<button id='" + categorie.get(i).getIdCategoria() + "' type='button' class='aggiungiCategoria btn btn-primary btn-block'><i class='fas fa-plus-circle'></i></button>"
+							+ "</div>"
+							+ "<div class='col-10'>"
+							+ categorie.get(i).getDescrizione()
+							+ "</div>"
+							+ "</div>";
+				}
+          		html += "<h5>Le tue categorie</h5>";
+          		for(int i = 0; i < categorieUtente.size(); i ++)
+          		{
+          			html += "<div class='row' style='margin-bottom: 10px;'>"
+          					+ "<div class='col-2'>"
+          					+ "<button id='" + categorieUtente.get(i).getIdCategoria() + "' type='button' class='rimuoviCategoria btn btn-primary btn-block'><i class='fas fa-minus-circle'></i></button>"
+          					+ "</div>"
+          					+ "<div class='col-10'>"
+          					+ categorieUtente.get(i).getDescrizione()
+          					+ "</div>"
+          					+ "</div>";
+          		}
+          		
+				
+				response.getWriter().write(html);
 			}
 			break;
 	

@@ -8,6 +8,8 @@ import java.sql.ResultSet;
 import java.sql.SQLIntegrityConstraintViolationException;
 import java.util.ArrayList;
 
+import com.mysql.cj.x.protobuf.MysqlxDatatypes.Array;
+
 public class ManagerDB 
 {
 	private Connection conn;
@@ -358,7 +360,7 @@ public class ManagerDB
 		{
 			String query = "SELECT SUM(p.ore) oreErogate FROM utenti u "
 					+ "INNER JOIN "
-					+ "prestazioni p ON u.idUtente = p.idErogatore WHERE u.idUtente = ? GROUP BY u.idUtente";
+					+ "prestazioni p ON u.idUtente = p.idErogatore WHERE u.idUtente = ? GROUP BY u.idUtente AND p.statoPrestazione = 2";
 			PreparedStatement ps = conn.prepareStatement(query);
 			ps.setInt(1, idUtente);
 			
@@ -388,7 +390,7 @@ public class ManagerDB
 		{
 			String query = "SELECT SUM(p.ore) oreFruite FROM utenti u "
 					+ "INNER JOIN "
-					+ "prestazioni p ON u.idUtente = p.idFruitore WHERE u.idUtente = ? GROUP BY u.idUtente";
+					+ "prestazioni p ON u.idUtente = p.idFruitore WHERE u.idUtente = ? GROUP BY u.idUtente AND p.statoPrestazione = 2";
 			PreparedStatement ps = conn.prepareStatement(query);
 			ps.setInt(1, idUtente);
 			
@@ -416,7 +418,10 @@ public class ManagerDB
 		
 		try 
 		{
-			String query = "SELECT * FROM utenti u INNER JOIN prestazioni p ON u.idUtente = p.idErogatore WHERE u.idUtente = ? ORDER BY p.ore DESC";
+			String query = "SELECT * FROM utenti u "
+					+ "INNER JOIN "
+					+ "prestazioni p ON u.idUtente = p.idErogatore "
+					+ "WHERE u.idUtente = ? AND p.statoPrestazione = 2 ORDER BY p.ore DESC";
 			PreparedStatement ps = conn.prepareStatement(query);
 			ps.setInt(1, idUtente);
 			
@@ -437,6 +442,100 @@ public class ManagerDB
 	}
 	
 	
+	public ArrayList<Utente> listaUtenti()
+	{
+		ArrayList<Utente> temp = new ArrayList<Utente>();
+		
+		
+		try 
+		{
+			String query = "SELECT * FROM utenti";
+			PreparedStatement ps = conn.prepareStatement(query);
+			
+			
+			ResultSet rs = ps.executeQuery();
+			while(rs.next())
+			{
+				temp.add(new Utente(rs.getString("nominativo"), rs.getString("indirizzo"), rs.getString("telefono")));
+			}
+		} 
+		catch (Exception e) 
+		{
+			e.printStackTrace();
+		}
+		
+		
+		return temp;
+	}
+	
+	
+	public ArrayList<Categoria> categorieUtente(int idUtente)
+	{
+		ArrayList<Categoria> temp = new ArrayList<Categoria>();
+		
+		
+		try 
+		{
+			String query = "SELECT * FROM "
+					+ "(utenti u INNER JOIN categorie_utenti cu ON u.idUtente = cu.idUtente) "
+					+ "INNER JOIN "
+					+ "categorie c ON c.idCategoria = cu.idCategoria "
+					+ "WHERE u.idUtente = ?";
+			PreparedStatement ps = conn.prepareStatement(query);
+			ps.setInt(1, idUtente);
+			
+			
+			ResultSet rs = ps.executeQuery();
+			while(rs.next())
+			{
+				temp.add(new Categoria(rs.getInt("idCategoria"), rs.getString("descrizione")));
+			}
+		} 
+		catch (Exception e) 
+		{
+			e.printStackTrace();
+		}
+		
+		
+		return temp;
+	}
+	
+	
+	public void aggiungiCategoria(int idUtente, int idCategoria)
+	{
+		try 
+		{
+			String query = "INSERT INTO categorie_utenti VALUES(?, ?)";
+			PreparedStatement ps = conn.prepareStatement(query);
+			ps.setInt(1, idCategoria);
+			ps.setInt(2, idUtente);
+			ps.execute();
+		} 
+		catch (Exception e) 
+		{
+			e.printStackTrace();
+		}
+	}
+	
+	
+	public void rimuoviCategoria(int idUtente, int idCategoria)
+	{
+		try 
+		{
+			String query ="DELETE FROM categorie_utenti "
+					+ "WHERE idCategoria = ? AND idUtente = ?";
+			PreparedStatement ps = conn.prepareStatement(query);
+			ps.setInt(1, idCategoria);
+			ps.setInt(2, idUtente);
+			ps.execute();
+		} 
+		catch (Exception e) 
+		{
+			e.printStackTrace();
+		}
+	}
+	
+	
 	public void chiudiConnessione()
 	{
 		try 
@@ -447,10 +546,5 @@ public class ManagerDB
 		{
 			e.printStackTrace();
 		}
-	}
-	
-	
-	public static void main(String[] args) {
-		new ManagerDB("localhost", "3306", "bancadeltempo", "root", "").prestazioniErogate(idUtente)
 	}
 }

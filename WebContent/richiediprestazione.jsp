@@ -96,6 +96,20 @@
 	      </li>
 	    </ul>
     <%
+	    if(utente.getTipoUtente() == 1)
+		{
+		%>
+			<li class="nav-header">SEZIONE AMMINISTRATORE</li>
+			<li class="nav-item">
+	            <a href="admin/utenti.jsp" class="nav-link">
+	              <i class="nav-icon fas fa-users"></i>
+	              <p>
+	                Lista utenti
+	              </p>
+	            </a>
+	          </li>
+		<%
+		}
     }
     %>
   </nav>
@@ -197,6 +211,20 @@
 	          </li>
         <%
         }
+	        if(utente.getTipoUtente() == 1)
+	    	{
+	    	%>
+	    		<li class="nav-header">SEZIONE AMMINISTRATORE</li>
+	    		<li class="nav-item">
+		            <a href="admin/utenti.jsp" class="nav-link">
+		              <i class="nav-icon fas fa-users"></i>
+		              <p>
+		                Lista utenti
+		              </p>
+		            </a>
+		          </li>
+	    	<%
+	    	}
         %>
           
         </ul>

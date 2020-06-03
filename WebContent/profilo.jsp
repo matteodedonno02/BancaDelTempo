@@ -1,14 +1,17 @@
+<%@page import="it.meucci.Categoria"%>
 <%@page import="it.meucci.Prestazione"%>
 <%@page import="java.util.ArrayList"%>
 <%@page import="java.util.Properties"%>
 <%@page import="it.meucci.ManagerDB"%>
 <%@page import="it.meucci.Utente"%>
-<%@ page language="java" contentType="text/html; charset=ISO-8859-1"
-    pageEncoding="ISO-8859-1"%>
+<%@ page language="java" contentType="text/html; charset=UTF-8"
+    pageEncoding="UTF-8"%>
 <%!
 	Utente utente;
 	ManagerDB db;
 	Properties prop;
+	ArrayList<Categoria> categorie;
+	ArrayList<Categoria> categorieUtente;
 	int oreErogate;
 	int oreFruite;
 	ArrayList<Prestazione> prestazioniErogate;
@@ -24,10 +27,24 @@
 	
 	prop = (Properties)getServletContext().getAttribute("PROPERTIES");
 	db = new ManagerDB(prop.getProperty("db.host"), prop.getProperty("db.port"), prop.getProperty("db.database"), prop.getProperty("db.user"), prop.getProperty("db.password"));
+	categorie = db.categorie();
+	categorieUtente = db.categorieUtente(utente.getIdUtente());
 	oreErogate = db.oreErogate(utente.getIdUtente());
 	oreFruite = db.oreFruite(utente.getIdUtente());
 	prestazioniErogate = db.prestazioniErogate(utente.getIdUtente());
 	db.chiudiConnessione();
+	
+	
+	for(int i = 0; i < categorieUtente.size(); i ++)
+	{
+		for(int j = 0; j < categorie.size(); j ++)
+		{
+			if(categorieUtente.get(i).getIdCategoria() == categorie.get(j).getIdCategoria())
+			{
+				categorie.remove(j);
+			}
+		}
+	}
 %>
 <!DOCTYPE html>
 <html>
@@ -248,12 +265,48 @@
             <div class="card">
               <div class="card-header p-2">
                 <ul class="nav nav-pills">
-                  <li class="nav-item"><a class="nav-link active" href="#prestazionierogate" data-toggle="tab">Prestazioni erogate</a></li>
+                	<li class="nav-item"><a class="nav-link active" href="#categorie" data-toggle="tab">Categorie</a></li>
+                  <li class="nav-item"><a class="nav-link" href="#prestazionierogate" data-toggle="tab">Prestazioni erogate</a></li>
                 </ul>
               </div><!-- /.card-header -->
               <div class="card-body">
                 <div class="tab-content">
-                  <div class="active tab-pane" id="prestazionierogate">
+                  <div class="active tab-pane" id="categorie">
+                  	<h5>Categorie disponibili</h5>
+                  	<%
+                  	for(int i = 0; i < categorie.size(); i ++)
+                  	{
+                  	%>
+                  		<div class="row" style="margin-bottom: 10px;">
+	                  		<div class="col-2">
+	                  			<button id="<%=categorie.get(i).getIdCategoria() %>" type="button" class="aggiungiCategoria btn btn-primary btn-block"><i class="fas fa-plus-circle"></i></button>
+	                  		</div>
+	                  		<div class="col-10">
+	                  			<%=categorie.get(i).getDescrizione() %>
+	                  		</div>
+                  		</div>
+                  	<%
+                  	}
+                  	%>
+                  	<h5>Le tue categorie</h5>
+                  	<%
+                  	for(int i = 0; i < categorieUtente.size(); i ++)
+                  	{
+                  	%>
+                  		<div class="row" style="margin-bottom: 10px;">
+	                  		<div class="col-2">
+	                  			<button id="<%=categorieUtente.get(i).getIdCategoria() %>" type="button" class="rimuoviCategoria btn btn-primary btn-block"><i class="fas fa-minus-circle"></i></button>
+	                  		</div>
+	                  		<div class="col-10">
+	                  			<%=categorieUtente.get(i).getDescrizione() %>
+	                  		</div>
+                  		</div>
+                  	<%
+                  	}
+                  	%>
+                  </div>
+                  <!-- /.tab-pane -->
+                  <div class="tab-pane" id="prestazionierogate">
                   	<table id="example2" class="table table-bordered table-hover">
 		                <thead>
 		                <tr>
@@ -278,7 +331,6 @@
 		                </tbody>
 		              </table>
                   </div>
-                  <!-- /.tab-pane -->
                   <!-- /.tab-pane -->
                 </div>
                 <!-- /.tab-content -->
@@ -314,5 +366,51 @@
 <script src="dist/js/adminlte.min.js"></script>
 <!-- AdminLTE for demo purposes -->
 <script src="dist/js/demo.js"></script>
+<script>
+	$(".aggiungiCategoria").click(function(event) 
+	{
+		var idCategoria = event.target.id;
+		var idUtente = <%=utente.getIdUtente() %>;
+	    $.ajax(
+		{
+			url : "gestioneUtenti",
+			type : "POST",
+			data : 
+			{
+				cmd: "aggiungiCategoria",
+				idUtente: idUtente,
+				idCategoria: idCategoria,
+			},
+			success : function(result) 
+			{
+				$("#categorie").html(result);
+				location.reload();
+			}
+		});
+	});
+	
+	
+	$(".rimuoviCategoria").click(function(event) 
+	{
+		var idCategoria = event.target.id;
+		var idUtente = <%=utente.getIdUtente() %>;
+	    $.ajax(
+		{
+			url : "gestioneUtenti",
+			type : "POST",
+			data : 
+			{
+				cmd: "rimuoviCategoria",
+				idUtente: idUtente,
+				idCategoria: idCategoria,
+			},
+			success : function(result) 
+			{
+				$("#categorie").html(result);
+				location.reload();
+			}
+		});
+	});
+</script>
 </body>
 </html>
