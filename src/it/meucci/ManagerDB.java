@@ -349,37 +349,6 @@ public class ManagerDB
 	}
 	
 	
-	public ArrayList<Prestazione> prestazioni(int idUtente)
-	{
-		ArrayList<Prestazione> temp = new ArrayList<Prestazione>();
-		
-		
-		try 
-		{
-			String query = "SELECT * FROM utenti u "
-					+ "INNER JOIN "
-					+ "prestazioni p ON u.idUtente = p.idErogatore ORDER BY p.ore DESC "
-					+ "WHERE u.idUtente = ?";
-			PreparedStatement ps = conn.prepareStatement(query);
-			ps.setInt(1, idUtente);
-			
-			
-			ResultSet rs = ps.executeQuery();
-			while(rs.next())
-			{
-				temp.add(new Prestazione(rs.getDate("data"), rs.getInt("ore"), rs.getString("descrizione")));
-			}
-		} 
-		catch (Exception e)
-		{
-			e.printStackTrace();
-		}
-		
-		
-		return temp;
-	}
-	
-	
 	public int oreErogate(int idUtente)
 	{
 		int oreErogate = 0;
@@ -440,6 +409,34 @@ public class ManagerDB
 	}
 	
 	
+	public ArrayList<Prestazione> prestazioniErogate(int idUtente)
+	{
+		ArrayList<Prestazione> temp = new ArrayList<Prestazione>();
+		
+		
+		try 
+		{
+			String query = "SELECT * FROM utenti u INNER JOIN prestazioni p ON u.idUtente = p.idErogatore WHERE u.idUtente = ? ORDER BY p.ore DESC";
+			PreparedStatement ps = conn.prepareStatement(query);
+			ps.setInt(1, idUtente);
+			
+			
+			ResultSet rs = ps.executeQuery();
+			while(rs.next())
+			{
+				temp.add(new Prestazione(rs.getDate("data"), rs.getInt("ore"), rs.getString("descrizione")));
+			}
+		} 
+		catch (Exception e) 
+		{
+			e.printStackTrace();
+		}
+		
+		
+		return temp;
+	}
+	
+	
 	public void chiudiConnessione()
 	{
 		try 
@@ -450,5 +447,10 @@ public class ManagerDB
 		{
 			e.printStackTrace();
 		}
+	}
+	
+	
+	public static void main(String[] args) {
+		new ManagerDB("localhost", "3306", "bancadeltempo", "root", "").prestazioniErogate(idUtente)
 	}
 }
