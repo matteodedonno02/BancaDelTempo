@@ -1,3 +1,4 @@
+<%@page import="it.meucci.Categoria"%>
 <%@page import="java.util.Properties"%>
 <%@page import="it.meucci.ManagerDB"%>
 <%@page import="java.util.ArrayList"%>
@@ -10,8 +11,11 @@
 	ManagerDB db;
 	String visualizza;
 	ArrayList<Utente> utenti;
+	ArrayList<Categoria> categorie;
 %>
 <%
+
+
 	utente = (Utente)session.getAttribute("LOGGED_USER");
 	if(utente == null || utente.getTipoUtente() == 0)
 	{
@@ -21,6 +25,12 @@
 	
 	
 	visualizza = request.getParameter("elemento");
+
+	if(visualizza == null)
+	{
+		response.sendRedirect("../index.jsp");
+		return;
+	}
 	
 	
 	prop = (Properties)getServletContext().getAttribute("PROPERTIES");
@@ -31,14 +41,14 @@
 	{
 		utenti = db.utentiConCategorie();
 	}
+	else if(visualizza.equals("categorie"))
+	{
+		categorie = db.categorie();
+	}
 	
 	
 	
 	db.chiudiConnessione();
-	
-	
-	
-	
 %>
 <!DOCTYPE html>
 <html>
@@ -62,6 +72,7 @@
   <link href="https://fonts.googleapis.com/css?family=Source+Sans+Pro:300,400,400i,700" rel="stylesheet">
   <link href="../dist/css/my.css" rel="stylesheet">
   <link rel="shortcut icon" href="../dist/img/AdminLTELogo.png" type="image/x-icon">
+  <link rel="stylesheet" href="plugins/sweetalert2/sweetalert2.min.css">
 </head>
 <body class="hold-transition sidebar-mini">
 <div class="wrapper">
@@ -138,7 +149,7 @@
         else
         {
         %>
-        	<a href="profilo.jsp" class="d-block"><%=utente.getNominativo() %></a>
+        	<a href="../profilo.jsp" class="d-block"><%=utente.getNominativo() %></a>
         <%
         }
         %>
@@ -232,6 +243,27 @@
 		              </p>
 		            </a>
 		          </li>
+		          <li class="nav-item">
+		          	<%
+		            if(visualizza.equals("categorie"))
+		            {
+		            %>
+		            	<a href="visualizza.jsp?elemento=categorie" class="nav-link active">
+		            <%
+		            }
+		            else
+		            {
+		            %>
+		            	 <a href="visualizza.jsp?elemento=categorie" class="nav-link">
+		            <%
+		            }
+		            %>
+		              <i class="nav-icon fas fa-users"></i>
+		              <p>
+		                Lista categorie
+		              </p>
+		            </a>
+		          </li>
 	    	<%
 	    	}
         }
@@ -256,6 +288,12 @@
             {
            	%>
            		<h1>Lista utenti</h1>
+           	<%
+            }
+            else if(visualizza.equals("categorie"))
+            {
+           	%>
+           		<h1>Lista categorie</h1>
            	<%
             }
             %>
@@ -315,6 +353,43 @@
 	                %>
                 <%
                 }
+                else if(visualizza.equals("categorie"))
+                {
+                %>
+                	
+		          <div class="row">
+		          	<form action="../gestioneCategorie" method="post">
+		          		<input type="hidden" name="cmd" value="aggiungiCategoria">
+		          		<div class="col-4">
+			          		<input class="form-control" required="true" type="text" name="txtDescrizione" placeholder="Nuova categoria">
+			          	</div>
+			          	<div class="col-2">
+			          		<input type="submit" class="btn btn-primary btn-block" value="Aggiungi">
+			          	</div>
+		          	</form>
+		          </div>
+                	<thead>
+	                <tr>
+	                  <th>Descrizione</th>
+	                  <th>Modifica</th>
+	                  <th>Elimina</th>
+	                </tr>
+	                </thead>
+	                <tbody>
+	                <%
+	                for(int i = 0; i < categorie.size(); i ++)
+	                {
+	                %>
+	                	<tr>
+			               	<td><%=categorie.get(i).getDescrizione() %></td>
+			               	<td style="text-align: center;"><a href="modifica.jsp?elemento=categorie&idCategoria=<%=categorie.get(i).getIdCategoria() %>"><i class="fas fa-edit"></i></a></td>
+			               	<td style="text-align: center;"><a href="../gestioneCategorie?cmd=cancellaCategoria&idCategoria=<%=categorie.get(i).getIdCategoria() %>"><i class="far fa-trash-alt"></i></a></td>
+	                	</tr>
+	                <%
+	                }
+	                %>
+                <%
+                }
                 %>
                 </tbody>
               </table>
@@ -355,6 +430,7 @@
 <!-- AdminLTE for demo purposes -->
 <script src="../dist/js/demo.js"></script>
 <!-- page script -->
+<script src="../plugins/sweetalert2/sweetalert2.all.min.js"></script>
 <script>
   $(function () {
     $("#example1").DataTable({
@@ -380,6 +456,44 @@
       }
     });
   });
+  
+  
+  <%
+  if(visualizza.equals("categorie") && request.getParameter("aggiunta") != null && request.getParameter("aggiunta").equals("errore"))
+  {
+  %>
+  	const Toast = Swal.mixin(
+  	{
+		toast : true,
+		position : "top-end",
+		showConfirmButton : false,
+		timer : 6000
+	});
+	Toast.fire(
+	{
+		icon : "error",
+		title : "Categoria già esistente"
+	});
+  <%
+  }
+  else if(visualizza.equals("categorie") && request.getParameter("aggiunta") != null && request.getParameter("aggiunta").equals("successo"))
+  {
+  %>
+  	const Toast = Swal.mixin(
+  	{
+      toast: true,
+      position: "top-end",
+      showConfirmButton: false,
+      timer: 6000
+    });
+  	Toast.fire(
+  	{
+        icon: "success",
+        title: "Categoria aggiunta con successo"
+    })
+  <%
+  }
+  %>
 </script>
 </body>
 </html>

@@ -670,6 +670,102 @@ public class ManagerDB
 	}
 	
 	
+	public void cancellaCategoria(int idCategoria)
+	{
+		try 
+		{
+			String query = "DELETE FROM categorie_utenti WHERE idCategoria = ?";
+			PreparedStatement ps = conn.prepareStatement(query);
+			ps.setInt(1, idCategoria);
+			ps.execute();
+			
+			
+			query = "DELETE FROM categorie WHERE idCategoria = ?";
+			ps = conn.prepareStatement(query);
+			ps.setInt(1, idCategoria);
+			ps.execute();
+		} 
+		catch (Exception e) 
+		{
+			e.printStackTrace();
+		}
+	}
+	
+	
+	public Categoria categoria(int idCategoria)
+	{
+		Categoria temp = null;
+		
+		
+		try 
+		{
+			String query ="SELECT * FROM categorie "
+					+ "WHERE idCategoria = ?";
+			PreparedStatement ps = conn.prepareStatement(query);
+			ps.setInt(1, idCategoria);
+			ResultSet rs = ps.executeQuery();
+			if(rs.next())
+			{
+				temp = new Categoria(rs.getInt("idCategoria"), rs.getString("descrizione"));
+			}
+		} 
+		catch (Exception e) 
+		{
+			e.printStackTrace();
+		}
+		
+		
+		return temp;
+	}
+	
+	
+	public void modificaCategoria(Categoria temp)
+	{
+		try 
+		{
+			String query = "UPDATE categorie "
+					+ "SET descrizione = ? "
+					+ "WHERE idCategoria = ?";
+			PreparedStatement ps = conn.prepareStatement(query);
+			ps.setString(1, temp.getDescrizione());
+			ps.setInt(2, temp.getIdCategoria());
+			ps.execute();
+		} 
+		catch (Exception e) 
+		{
+			e.printStackTrace();
+		}
+	}
+	
+	
+	public int aggiungiCategoria(String descrizione)
+	{
+		try 
+		{
+			descrizione = descrizione.toLowerCase();
+			descrizione = descrizione.replace(descrizione.charAt(0), Character.toUpperCase(descrizione.charAt(0)));
+			
+			
+			String query = "INSERT INTO categorie (descrizione) VALUES (?)";
+			PreparedStatement ps = conn.prepareStatement(query);
+			ps.setString(1, descrizione);
+			ps.execute();
+			
+			
+			return 1;
+		}
+		catch (SQLIntegrityConstraintViolationException e) 
+		{
+			return 0;
+		}
+		catch (Exception e) 
+		{
+			e.printStackTrace();
+			return -1;
+		}
+	}
+	
+	
 	public void chiudiConnessione()
 	{
 		try 

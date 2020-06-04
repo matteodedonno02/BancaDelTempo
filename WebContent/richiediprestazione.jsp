@@ -25,10 +25,8 @@
 	prop = (Properties)getServletContext().getAttribute("PROPERTIES");
 	db = new ManagerDB(prop.getProperty("db.host"), prop.getProperty("db.port"), prop.getProperty("db.database"), prop.getProperty("db.user"), prop.getProperty("db.password"));
 	zona = db.zonaDaId(utente.getIdZona());
+	categorie = db.categorie();
 	db.chiudiConnessione();
-	
-	
-	categorie = (ArrayList<Categoria>)getServletContext().getAttribute("CATEGORIE");
 %>
 <!DOCTYPE html>
 <html>
@@ -250,6 +248,14 @@
 		              <i class="nav-icon fas fa-users"></i>
 		              <p>
 		                Lista utenti
+		              </p>
+		            </a>
+		          </li>
+		          <li class="nav-item">
+		            <a href="admin/visualizza.jsp?elemento=categorie" class="nav-link">
+		              <i class="nav-icon fas fa-users"></i>
+		              <p>
+		                Lista categorie
 		              </p>
 		            </a>
 		          </li>

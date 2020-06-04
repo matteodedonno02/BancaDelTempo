@@ -186,6 +186,14 @@
 		              </p>
 		            </a>
 		          </li>
+		          <li class="nav-item">
+		            <a href="admin/visualizza.jsp?elemento=categorie" class="nav-link">
+		              <i class="nav-icon fas fa-users"></i>
+		              <p>
+		                Lista categorie
+		              </p>
+		            </a>
+		          </li>
         	<%
         	}
         }

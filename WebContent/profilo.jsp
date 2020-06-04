@@ -138,7 +138,7 @@
         else
         {
         %>
-        	<a href="" class="d-block"><%=utente.getNominativo() %></a>
+        	<a href="profilo.jsp" class="d-block"><%=utente.getNominativo() %></a>
         <%
         }
         %>
@@ -216,6 +216,14 @@
 		              <i class="nav-icon fas fa-users"></i>
 		              <p>
 		                Lista utenti
+		              </p>
+		            </a>
+		          </li>
+		          <li class="nav-item">
+		            <a href="admin/visualizza.jsp?elemento=categorie" class="nav-link">
+		              <i class="nav-icon fas fa-users"></i>
+		              <p>
+		                Lista categorie
 		              </p>
 		            </a>
 		          </li>

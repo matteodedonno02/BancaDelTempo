@@ -11,6 +11,7 @@
 	ManagerDB db;
 	Properties prop;
 	Utente utenteDaModificare;
+	Categoria categoriaDaModificare;
 	String visualizza;
 	ArrayList<Categoria> categorie;
 %>
@@ -33,7 +34,7 @@
 	if(visualizza.equals("utenti"))
 	{
 		utenteDaModificare = db.utente(Integer.parseInt(request.getParameter("idUtente")));
-		categorie = (ArrayList<Categoria>)getServletContext().getAttribute("CATEGORIE");
+		categorie = db.categorie();
 		
 		
 		for(int i = 0; i < utenteDaModificare.getCategorie().size(); i ++)
@@ -46,6 +47,10 @@
 				}
 			}
 		}
+	}
+	else if(visualizza.equals("categorie"))
+	{
+		categoriaDaModificare = db.categoria(Integer.parseInt(request.getParameter("idCategoria")));
 	}
 	
 	
@@ -144,7 +149,7 @@
         else
         {
         %>
-        	<a href="" class="d-block"><%=utente.getNominativo() %></a>
+        	<a href="../profilo.jsp" class="d-block"><%=utente.getNominativo() %></a>
         <%
         }
         %>
@@ -225,6 +230,14 @@
 		              </p>
 		            </a>
 		          </li>
+		          <li class="nav-item">
+		            <a href="visualizza.jsp?elemento=categorie" class="nav-link">
+		              <i class="nav-icon fas fa-users"></i>
+		              <p>
+		                Lista categorie
+		              </p>
+		            </a>
+		          </li>
 	    	<%
 	    	}
         }
@@ -249,6 +262,12 @@
             {
             %>
             	<h1>Modifica profilo</h1>
+            <%
+            }
+            else if(visualizza.equals("categorie"))
+            {
+            %>
+            	<h1>Modifica categoria</h1>
             <%
             }
             %>
@@ -351,6 +370,37 @@
 	        </div>
         <%
         }
+        else if(visualizza.equals("categorie"))
+        {
+        %>
+        	<div class="row">
+	          <div class="col-md-12">
+	
+	            <!-- Profile Image -->
+	            <div class="card card-primary card-outline">
+	              <div class="card-body box-profile">
+	                <div class="text-center">
+	                </div>
+	                
+	                <form autocomplete="off" action="../gestioneCategorie" method="post">
+		                <input type="hidden" name="cmd" value="modificaCategoria">
+		                <input type="hidden" name="idCategoria" value="<%=categoriaDaModificare.getIdCategoria() %>">
+			
+		                <h3 class="profile-username text-center"><input class="clearinput" required="true" style="text-align: center;" type="text" name="txtDescrizione" value="<%=categoriaDaModificare.getDescrizione() %>"></h3>
+		
+		                <div class="col-4">
+		                  <input type="submit" class="btn btn-primary btn-block" value="Salva">
+		                </div>
+	                </form>
+	              </div>
+	              <!-- /.card-body -->
+	            </div>
+	            <!-- /.card -->
+	          </div>
+	          <!-- /.col -->
+	        </div>
+        <%
+        }
         %>
         <!-- /.row -->
       </div><!-- /.container-fluid -->
@@ -379,50 +429,57 @@
 <!-- AdminLTE for demo purposes -->
 <script src="../dist/js/demo.js"></script>
 <script>
-	$(".aggiungiCategoria").click(function(event) 
+	<%
+	if(utenteDaModificare != null)
 	{
-		var idCategoria = event.target.id;
-		var idUtente = <%=utenteDaModificare.getIdUtente() %>;
-	    $.ajax(
-		{
-			url : "../gestioneUtenti",
-			type : "POST",
-			data : 
+	%>
+		$(".aggiungiCategoria").click(function(event) 
 			{
-				cmd: "aggiungiCategoria",
-				idUtente: idUtente,
-				idCategoria: idCategoria,
-			},
-			success : function(result) 
+				var idCategoria = event.target.id;
+				var idUtente = <%=utenteDaModificare.getIdUtente() %>;
+			    $.ajax(
+				{
+					url : "../gestioneUtenti",
+					type : "POST",
+					data : 
+					{
+						cmd: "aggiungiCategoria",
+						idUtente: idUtente,
+						idCategoria: idCategoria,
+					},
+					success : function(result) 
+					{
+						$("#categorie").html(result);
+						location.reload();
+					}
+				});
+			});
+			
+			
+			$(".rimuoviCategoria").click(function(event) 
 			{
-				$("#categorie").html(result);
-				location.reload();
-			}
-		});
-	});
-	
-	
-	$(".rimuoviCategoria").click(function(event) 
-	{
-		var idCategoria = event.target.id;
-		var idUtente = <%=utenteDaModificare.getIdUtente() %>;
-	    $.ajax(
-		{
-			url : "../gestioneUtenti",
-			type : "POST",
-			data : 
-			{
-				cmd: "rimuoviCategoria",
-				idUtente: idUtente,
-				idCategoria: idCategoria,
-			},
-			success : function(result) 
-			{
-				$("#categorie").html(result);
-				location.reload();
-			}
-		});
-	});
+				var idCategoria = event.target.id;
+				var idUtente = <%=utenteDaModificare.getIdUtente() %>;
+			    $.ajax(
+				{
+					url : "../gestioneUtenti",
+					type : "POST",
+					data : 
+					{
+						cmd: "rimuoviCategoria",
+						idUtente: idUtente,
+						idCategoria: idCategoria,
+					},
+					success : function(result) 
+					{
+						$("#categorie").html(result);
+						location.reload();
+					}
+				});
+			});
+	<%
+	}
+	%>
 </script>
 </body>
 </html>
