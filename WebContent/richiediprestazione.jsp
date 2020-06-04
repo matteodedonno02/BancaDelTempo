@@ -27,6 +27,7 @@
 	zona = db.zonaDaId(utente.getIdZona());
 	db.chiudiConnessione();
 	
+	
 	categorie = (ArrayList<Categoria>)getServletContext().getAttribute("CATEGORIE");
 %>
 <!DOCTYPE html>
@@ -53,6 +54,49 @@
   <link rel="shortcut icon" href="dist/img/AdminLTELogo.png" type="image/x-icon">
 </head>
 <body class="hold-transition sidebar-mini">
+	<div class="modal fade" id="modal-default">
+        <div class="modal-dialog">
+          <div class="modal-content">
+            <div class="modal-header">
+              <h4 class="modal-title">Richiedi prestazione</h4>
+              <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                <span aria-hidden="true">&times;</span>
+              </button>
+            </div>
+            <div class="modal-body">
+            	<form autocomplete="off" id="richiesta">
+            		<div class="input-group mb-3">
+						<input required="true" min="1" type="number" class="form-control" id="orePrestazione" placeholder="Ore">
+						<div class="input-group-append">
+							<div class="input-group-text">
+								<span class="far fa-clock"></span>
+							</div>
+						</div>
+					</div>
+					<div class="input-group mb-3">
+						<input required="true" type="date" class="form-control" id="dataPrestazione">
+						<div class="input-group-append">
+							<div class="input-group-text">
+								<span class="far fa-calendar-alt"></span>
+							</div>
+						</div>
+					</div>
+					<div class="form-group">
+                        <textarea required="true" class="form-control" rows="3" id="descrizionePrestazione" placeholder="Descrizione"></textarea>
+                    </div>
+            </div>
+            <div class="modal-footer justify-content-between">
+              <button type="button" class="btn btn-default" data-dismiss="modal">Chiudi</button>
+              <button type="submit" class="btn btn-primary">Richiedi</button>
+            </div>
+            	</form>
+          </div>
+          <!-- /.modal-content -->
+        </div>
+        <!-- /.modal-dialog -->
+      </div>
+
+
 <div class="wrapper">
 
   <!-- Navbar -->
@@ -96,20 +140,6 @@
 	      </li>
 	    </ul>
     <%
-	    if(utente.getTipoUtente() == 1)
-		{
-		%>
-			<li class="nav-header">SEZIONE AMMINISTRATORE</li>
-			<li class="nav-item">
-	            <a href="admin/utenti.jsp" class="nav-link">
-	              <i class="nav-icon fas fa-users"></i>
-	              <p>
-	                Lista utenti
-	              </p>
-	            </a>
-	          </li>
-		<%
-		}
     }
     %>
   </nav>
@@ -216,7 +246,7 @@
 	    	%>
 	    		<li class="nav-header">SEZIONE AMMINISTRATORE</li>
 	    		<li class="nav-item">
-		            <a href="admin/utenti.jsp" class="nav-link">
+		            <a href="admin/visualizza.jsp?elemento=utenti" class="nav-link">
 		              <i class="nav-icon fas fa-users"></i>
 		              <p>
 		                Lista utenti
@@ -325,6 +355,24 @@
 <script src="http://malsup.github.com/jquery.form.js"></script>
 <!-- page script -->
 <script>
+	var d = new Date();
+	var day = d.getDay();
+	if($(day).length == 1)
+	{
+		day = 0 + day.toString();
+	}
+	var month = d.getMonth() + 1;
+	if($(month).length == 1)
+	{
+		month = 0 + month.toString();
+	}
+	var year = d.getFullYear();
+	var dateStr = year + "-" + month + "-" + day;
+	
+	
+	$("#dataPrestazione").attr("min", dateStr);
+
+
 	$("#formCategoria").ajaxForm(
 	{
 		url: "gestionePrestazioni",
@@ -358,6 +406,35 @@
 					        }
 					    });
 				  	});
+			$(".richiediPrestazione").click(function()
+			{
+				var element = $(this);
+				$("#modal-default").modal("show");
+				
+				
+				$("#modal-default").on('hidden.bs.modal', function (e) 
+				{
+					if($("#orePrestazione").val() == "" || $("#dataPrestazione").val() == "" || $("#descrizionePrestazione").val() == "")
+					{
+						return;
+					}
+					
+					
+					element.attr("href", element.attr("href") + "&descrizione");
+					var href = element.attr("href");
+					alert(href);
+				})
+				
+				
+				return false;
+			});
+			
+			
+			$("#richiesta").submit(function(e)
+			{
+				$("#modal-default").modal("hide");
+		        e.preventDefault();
+		    });
 		}
 	});
 </script>

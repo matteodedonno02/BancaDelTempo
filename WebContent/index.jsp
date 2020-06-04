@@ -179,7 +179,7 @@
         	%>
         		<li class="nav-header">SEZIONE AMMINISTRATORE</li>
         		<li class="nav-item">
-		            <a href="admin/utenti.jsp" class="nav-link">
+		            <a href="admin/visualizza.jsp?elemento=utenti" class="nav-link">
 		              <i class="nav-icon fas fa-users"></i>
 		              <p>
 		                Lista utenti

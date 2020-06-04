@@ -10,60 +10,66 @@
 	Utente utente;
 	ManagerDB db;
 	Properties prop;
+	Utente utenteDaModificare;
+	String visualizza;
 	ArrayList<Categoria> categorie;
-	ArrayList<Categoria> categorieUtente;
-	int oreErogate;
-	int oreFruite;
-	ArrayList<Prestazione> prestazioniErogate;
 %>
 <%
 	utente = (Utente)session.getAttribute("LOGGED_USER");
-	if(utente == null)
+	if(utente == null || utente.getTipoUtente() == 0)
 	{
-		response.sendRedirect("index.jsp");
+		response.sendRedirect("../index.jsp");
 		return;
 	}
 	
 	
+	visualizza = request.getParameter("elemento");
+	
+	
 	prop = (Properties)getServletContext().getAttribute("PROPERTIES");
 	db = new ManagerDB(prop.getProperty("db.host"), prop.getProperty("db.port"), prop.getProperty("db.database"), prop.getProperty("db.user"), prop.getProperty("db.password"));
-	categorie = db.categorie();
-	categorieUtente = db.categorieUtente(utente.getIdUtente());
-	oreErogate = db.oreErogate(utente.getIdUtente());
-	oreFruite = db.oreFruite(utente.getIdUtente());
-	prestazioniErogate = db.prestazioniErogate(utente.getIdUtente());
-	db.chiudiConnessione();
 	
 	
-	for(int i = 0; i < categorieUtente.size(); i ++)
+	if(visualizza.equals("utenti"))
 	{
-		for(int j = 0; j < categorie.size(); j ++)
+		utenteDaModificare = db.utente(Integer.parseInt(request.getParameter("idUtente")));
+		categorie = (ArrayList<Categoria>)getServletContext().getAttribute("CATEGORIE");
+		
+		
+		for(int i = 0; i < utenteDaModificare.getCategorie().size(); i ++)
 		{
-			if(categorieUtente.get(i).getIdCategoria() == categorie.get(j).getIdCategoria())
+			for(int j = 0; j < categorie.size(); j ++)
 			{
-				categorie.remove(j);
+				if(utenteDaModificare.getCategorie().get(i).getIdCategoria() == categorie.get(j).getIdCategoria())
+				{
+					categorie.remove(j);
+				}
 			}
 		}
 	}
+	
+	
+	db.chiudiConnessione();
 %>
 <!DOCTYPE html>
 <html>
 <head>
   <meta charset="utf-8">
   <meta http-equiv="X-UA-Compatible" content="IE=edge">
-  <title>Banca Del Tempo | Profilo</title>
+  <title>Banca Del Tempo | Modifica</title>
   <!-- Tell the browser to be responsive to screen width -->
   <meta name="viewport" content="width=device-width, initial-scale=1">
 
   <!-- Font Awesome -->
-  <link rel="stylesheet" href="plugins/fontawesome-free/css/all.min.css">
+  <link rel="stylesheet" href="../plugins/fontawesome-free/css/all.min.css">
   <!-- Ionicons -->
   <link rel="stylesheet" href="https://code.ionicframework.com/ionicons/2.0.1/css/ionicons.min.css">
   <!-- Theme style -->
-  <link rel="stylesheet" href="dist/css/adminlte.min.css">
+  <link rel="stylesheet" href="../dist/css/adminlte.min.css">
   <!-- Google Font: Source Sans Pro -->
   <link href="https://fonts.googleapis.com/css?family=Source+Sans+Pro:300,400,400i,700" rel="stylesheet">
-  <link rel="shortcut icon" href="dist/img/AdminLTELogo.png" type="image/x-icon">
+  <link rel="shortcut icon" href="../dist/img/AdminLTELogo.png" type="image/x-icon">
+  <link rel="stylesheet" href="../dist/css/my.css">
 </head>
 <body class="hold-transition sidebar-mini">
 <div class="wrapper">
@@ -92,7 +98,7 @@
 	          <a href="#" class="dropdown-item">
 	            <!-- Message Start -->
 	            <div class="media">
-	              <img src="dist/img/user1-128x128.jpg" alt="User Avatar" class="img-size-50 mr-3 img-circle">
+	              <img src="../dist/img/user1-128x128.jpg" alt="User Avatar" class="img-size-50 mr-3 img-circle">
 	              <div class="media-body">
 	                <h3 class="dropdown-item-title">
 	                  Brad Diesel
@@ -116,7 +122,7 @@
   <aside class="main-sidebar sidebar-dark-primary elevation-4">
     <!-- Brand Logo -->
     <a href="index.jsp" class="brand-link">
-      <img src="dist/img/AdminLTELogo.png" alt="AdminLTE Logo" class="brand-image img-circle elevation-3" style="opacity: .8">
+      <img src="../dist/img/AdminLTELogo.png" alt="AdminLTE Logo" class="brand-image img-circle elevation-3" style="opacity: .8">
       <span class="brand-text font-weight-light"><b>Banca</b> Del Tempo</span>
     </a>
 
@@ -175,7 +181,7 @@
         {
         %>
         	<li class="nav-item">
-	            <a href="sociindebito.jsp" class="nav-link">
+	            <a href="../sociindebito.jsp" class="nav-link">
 	              <i class="nav-icon fas fa-history"></i>
 	              <p>
 	                Soci in debito
@@ -183,7 +189,7 @@
 	            </a>
 	          </li>
 	          <li class="nav-item">
-	            <a href="richiediprestazione.jsp" class="nav-link">
+	            <a href="../richiediprestazione.jsp" class="nav-link">
 	              <i class="nav-icon fas fa-th-list"></i>
 	              <p>
 	                Richiedi prestazione
@@ -191,7 +197,7 @@
 	            </a>
 	          </li>
 	          <li class="nav-item">
-	            <a href="socisegreteria.jsp" class="nav-link">
+	            <a href="../socisegreteria.jsp" class="nav-link">
 	              <i class="nav-icon fas fa-print"></i>
 	              <p>
 	                Soci segreteria
@@ -199,7 +205,7 @@
 	            </a>
 	          </li>
 	          <li class="nav-item">
-		          <a href="gestioneUtenti?cmd=logout" class="nav-link">
+		          <a href="../gestioneUtenti?cmd=logout" class="nav-link">
 		              <i class="nav-icon fas fa-sign-out-alt"></i>
 		              <p>
 		                Esci
@@ -212,7 +218,7 @@
 	    	%>
 	    		<li class="nav-header">SEZIONE AMMINISTRATORE</li>
 	    		<li class="nav-item">
-		            <a href="admin/visualizza.jsp?elemento=utenti" class="nav-link">
+		            <a href="visualizza.jsp?elemento=utenti" class="nav-link">
 		              <i class="nav-icon fas fa-users"></i>
 		              <p>
 		                Lista utenti
@@ -238,7 +244,14 @@
       <div class="container-fluid">
         <div class="row mb-2">
           <div class="col-sm-6">
-            <h1>Profilo</h1>
+            <%
+            if(visualizza.equals("utenti"))
+            {
+            %>
+            	<h1>Modifica profilo</h1>
+            <%
+            }
+            %>
           </div>
         </div>
       </div><!-- /.container-fluid -->
@@ -247,122 +260,98 @@
     <!-- Main content -->
     <section class="content">
       <div class="container-fluid">
-        <div class="row">
-          <div class="col-md-3">
-
-            <!-- Profile Image -->
-            <div class="card card-primary card-outline">
-              <div class="card-body box-profile">
-                <div class="text-center">
-                  <img class="profile-user-img img-fluid img-circle"
-                       src="https://image.flaticon.com/icons/svg/2919/2919600.svg"
-                       alt="User profile picture">
-                </div>
-
-                <h3 class="profile-username text-center"><%=utente.getNominativo() %></h3>
-
-                <ul class="list-group list-group-unbordered mb-3">
-                  <li class="list-group-item">
-                    <b>Email</b> <a class="float-right"><%=utente.getEmail() %></a>
-                  </li>
-  				<li class="list-group-item">
-                   <b>Indirizzo</b> <a class="float-right"><%=utente.getIndirizzo() %></a>
-                  </li>
-                  <li class="list-group-item">
-                    <b>Telefono</b> <a class="float-right"><%=utente.getTelefono() %></a>
-                  </li>
-                  <li class="list-group-item">
-                    <b>Ore erogate</b> <a class="float-right"><%=oreErogate %></a>
-                  </li>
-                  <li class="list-group-item">
-                    <b>Ore fruite</b> <a class="float-right"><%=oreFruite %></a>
-                  </li>
-                </ul>
-              </div>
-              <!-- /.card-body -->
-            </div>
-            <!-- /.card -->
-          </div>
-          <!-- /.col -->
-          <div class="col-md-9">
-            <div class="card">
-              <div class="card-header p-2">
-                <ul class="nav nav-pills">
-                	<li class="nav-item"><a class="nav-link active" href="#categorie" data-toggle="tab">Categorie</a></li>
-                  <li class="nav-item"><a class="nav-link" href="#prestazionierogate" data-toggle="tab">Prestazioni erogate</a></li>
-                </ul>
-              </div><!-- /.card-header -->
-              <div class="card-body">
-                <div class="tab-content">
-                  <div class="active tab-pane" id="categorie">
-                  	<h5>Categorie disponibili</h5>
-                  	<%
-                  	for(int i = 0; i < categorie.size(); i ++)
-                  	{
-                  	%>
-                  		<div class="row" style="margin-bottom: 10px;">
-	                  		<div class="col-2">
-	                  			<button id="<%=categorie.get(i).getIdCategoria() %>" type="button" class="aggiungiCategoria btn btn-primary btn-block"><i class="fas fa-plus-circle"></i></button>
+        <%
+        if(visualizza.equals("utenti"))
+        {
+        %>
+        	<div class="row">
+	          <div class="col-md-3">
+	
+	            <!-- Profile Image -->
+	            <div class="card card-primary card-outline">
+	              <div class="card-body box-profile">
+	                <div class="text-center">
+	                  <img class="profile-user-img img-fluid img-circle"
+	                       src="https://image.flaticon.com/icons/svg/2919/2919600.svg"
+	                       alt="User profile picture">
+	                </div>
+	                
+	                <form autocomplete="off" action="../gestioneUtenti" method="post">
+	                <input type="hidden" name="cmd" value="modificaUtente">
+	                <input type="hidden" name="idUtente" value="<%=utenteDaModificare.getIdUtente() %>">
+ 	
+	                <h3 class="profile-username text-center"><input class="clearinput" required="true" style="text-align: center;" type="text" name="txtNominativo" value="<%=utenteDaModificare.getNominativo() %>"></h3>
+	
+	                <ul class="list-group list-group-unbordered mb-3">
+	                  <li class="list-group-item">
+	                    <b>Email</b> <a class="float-right"><input type="email" class="clearinput" required="true" style="text-align: right;" name="txtEmail" value="<%=utenteDaModificare.getEmail() %>"></a>
+	                  </li>
+	                  <li class="list-group-item">
+	                    <b>Telefono</b> <a class="float-right"><input type="number" class="clearinput" required="true" style="text-align: right;" name="txtTelefono" value="<%=utenteDaModificare.getTelefono() %>"></a>
+	                  </li>
+	                  <input type="submit" class="btn btn-primary btn-block" value="Salva">
+	                 </form>
+	                </ul>
+	              </div>
+	              <!-- /.card-body -->
+	            </div>
+	            <!-- /.card -->
+	          </div>
+	          <!-- /.col -->
+	          <div class="col-md-9">
+	            <div class="card">
+	              <div class="card-header p-2">
+	                <ul class="nav nav-pills">
+	                	<li class="nav-item"><a class="nav-link active" href="#categorie" data-toggle="tab">Categorie</a></li>
+	                </ul>
+	              </div><!-- /.card-header -->
+	              <div class="card-body">
+	                <div class="tab-content">
+	                  <div class="active tab-pane" id="categorie">
+	                  	<h5>Categorie disponibili</h5>
+	                  	<%
+	                  	for(int i = 0; i < categorie.size(); i ++)
+	                  	{
+	                  	%>
+	                  		<div class="row" style="margin-bottom: 10px;">
+		                  		<div class="col-2">
+		                  			<button id="<%=categorie.get(i).getIdCategoria() %>" type="button" class="aggiungiCategoria btn btn-primary btn-block"><i class="fas fa-plus-circle"></i></button>
+		                  		</div>
+		                  		<div class="col-10">
+		                  			<%=categorie.get(i).getDescrizione() %>
+		                  		</div>
 	                  		</div>
-	                  		<div class="col-10">
-	                  			<%=categorie.get(i).getDescrizione() %>
+	                  	<%
+	                  	}
+	                  	%>
+	                  	<h5>Categorie dell'utente</h5>
+	                  	<%
+	                  	for(int i = 0; i < utenteDaModificare.getCategorie().size(); i ++)
+	                  	{
+	                  	%>
+	                  		<div class="row" style="margin-bottom: 10px;">
+		                  		<div class="col-2">
+		                  			<button id="<%=utenteDaModificare.getCategorie().get(i).getIdCategoria() %>" type="button" class="rimuoviCategoria btn btn-primary btn-block"><i class="fas fa-minus-circle"></i></button>
+		                  		</div>
+		                  		<div class="col-10">
+		                  			<%=utenteDaModificare.getCategorie().get(i).getDescrizione() %>
+		                  		</div>
 	                  		</div>
-                  		</div>
-                  	<%
-                  	}
-                  	%>
-                  	<h5>Le tue categorie</h5>
-                  	<%
-                  	for(int i = 0; i < categorieUtente.size(); i ++)
-                  	{
-                  	%>
-                  		<div class="row" style="margin-bottom: 10px;">
-	                  		<div class="col-2">
-	                  			<button id="<%=categorieUtente.get(i).getIdCategoria() %>" type="button" class="rimuoviCategoria btn btn-primary btn-block"><i class="fas fa-minus-circle"></i></button>
-	                  		</div>
-	                  		<div class="col-10">
-	                  			<%=categorieUtente.get(i).getDescrizione() %>
-	                  		</div>
-                  		</div>
-                  	<%
-                  	}
-                  	%>
-                  </div>
-                  <!-- /.tab-pane -->
-                  <div class="tab-pane" id="prestazionierogate">
-                  	<table id="example2" class="table table-bordered table-hover">
-		                <thead>
-		                <tr>
-		                  <th>Data</th>
-		                  <th>Ore</th>
-		                  <th>Descrizione</th>
-		                </tr>
-		                </thead>
-		                <tbody>
-		                <%
-		                for(int i = 0; i < prestazioniErogate.size(); i ++)
-		                {
-		                %>
-		                	<tr>
-				               	<td><%=prestazioniErogate.get(i).getData() %></td>
-				               	<td><%=prestazioniErogate.get(i).getOre() %></td>
-				               	<td><%=prestazioniErogate.get(i).getDescrizione() %></td>
-		                	</tr>
-		                <%
-		                }
-		                %>
-		                </tbody>
-		              </table>
-                  </div>
-                  <!-- /.tab-pane -->
-                </div>
-                <!-- /.tab-content -->
-              </div><!-- /.card-body -->
-            </div>
-            <!-- /.nav-tabs-custom -->
-          </div>
-          <!-- /.col -->
-        </div>
+	                  	<%
+	                  	}
+	                  	%>
+	                  </div>
+	                </div>
+	                <!-- /.tab-content -->
+	              </div><!-- /.card-body -->
+	            </div>
+	            <!-- /.nav-tabs-custom -->
+	          </div>
+	          <!-- /.col -->
+	        </div>
+        <%
+        }
+        %>
         <!-- /.row -->
       </div><!-- /.container-fluid -->
     </section>
@@ -382,21 +371,21 @@
 <!-- ./wrapper -->
 
 <!-- jQuery -->
-<script src="plugins/jquery/jquery.min.js"></script>
+<script src="../plugins/jquery/jquery.min.js"></script>
 <!-- Bootstrap 4 -->
-<script src="plugins/bootstrap/js/bootstrap.bundle.min.js"></script>
+<script src="../plugins/bootstrap/js/bootstrap.bundle.min.js"></script>
 <!-- AdminLTE App -->
-<script src="dist/js/adminlte.min.js"></script>
+<script src="../dist/js/adminlte.min.js"></script>
 <!-- AdminLTE for demo purposes -->
-<script src="dist/js/demo.js"></script>
+<script src="../dist/js/demo.js"></script>
 <script>
 	$(".aggiungiCategoria").click(function(event) 
 	{
 		var idCategoria = event.target.id;
-		var idUtente = <%=utente.getIdUtente() %>;
+		var idUtente = <%=utenteDaModificare.getIdUtente() %>;
 	    $.ajax(
 		{
-			url : "gestioneUtenti",
+			url : "../gestioneUtenti",
 			type : "POST",
 			data : 
 			{
@@ -416,10 +405,10 @@
 	$(".rimuoviCategoria").click(function(event) 
 	{
 		var idCategoria = event.target.id;
-		var idUtente = <%=utente.getIdUtente() %>;
+		var idUtente = <%=utenteDaModificare.getIdUtente() %>;
 	    $.ajax(
 		{
-			url : "gestioneUtenti",
+			url : "../gestioneUtenti",
 			type : "POST",
 			data : 
 			{

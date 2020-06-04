@@ -32,8 +32,33 @@ public class GestioneUtentiServlet extends HttpServlet
 		switch (cmd) 
 		{
 			case "logout":
+			{
 				request.getSession().removeAttribute("LOGGED_USER");
 				response.sendRedirect("index.jsp");
+			}
+			break;
+			
+			
+			case "cancellaUtente":
+			{
+				if(((Utente)request.getSession().getAttribute("LOGGED_USER")).getTipoUtente() == 0)
+				{
+					response.sendRedirect("index.jsp");
+					return;
+				}
+				
+				
+				Properties prop = (Properties)getServletContext().getAttribute("PROPERTIES");
+				ManagerDB db = new ManagerDB(prop.getProperty("db.host"), prop.getProperty("db.port"), prop.getProperty("db.database"), prop.getProperty("db.user"), prop.getProperty("db.password"));
+				
+				
+				int idUtente = Integer.parseInt(request.getParameter("idUtente"));
+				db.cancellaUtente(idUtente);
+				db.chiudiConnessione();
+				
+				
+				response.sendRedirect("admin/visualizza.jsp?elemento=utenti");
+			}
 			break;
 	
 			default:
@@ -234,6 +259,26 @@ public class GestioneUtentiServlet extends HttpServlet
           		
 				
 				response.getWriter().write(html);
+			}
+			break;
+			
+			
+			case "modificaUtente":
+			{
+				if(((Utente)request.getSession().getAttribute("LOGGED_USER")).getTipoUtente() == 0)
+				{
+					response.sendRedirect("index.jsp");
+					return;
+				}
+				
+				
+				int idUtente = Integer.parseInt(request.getParameter("idUtente"));
+				String nominativo = request.getParameter("txtNominativo");
+				String email = request.getParameter("txtEmail");
+				String telefono = request.getParameter("txtTelefono");
+				db.modificaUtente(new Utente(idUtente, email, null, nominativo, null, telefono, 0, 0));
+				db.chiudiConnessione();
+				response.sendRedirect("admin/modifica.jsp?elemento=utenti&idUtente=" + idUtente);
 			}
 			break;
 	

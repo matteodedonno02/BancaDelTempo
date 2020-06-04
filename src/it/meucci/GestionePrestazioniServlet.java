@@ -66,12 +66,13 @@ public class GestionePrestazioniServlet extends HttpServlet
 						"<th>Nominativo</th>" + 
 						"<th>Indirizzo</th>" + 
 						"<th>Telefono</th>" + 
+						"<th>Richiedi</th>" + 
 						"</tr>" + 
 						"</thead>" + 
 						"<tbody>";
 				for(int i = 0; i < temp.size(); i ++)
 				{
-					html += "<tr>" + "<td>" + temp.get(i).getNominativo() + "</td>" + "<td><a target='_blank' href='https://www.google.it/maps/place/" + temp.get(i).getIndirizzo().replace(" ", "+") + "'>" + temp.get(i).getIndirizzo() + "</a></td>" + "<td>" + temp.get(i).getTelefono() + "</td>" + "</tr>";
+					html += "<tr>" + "<td>" + temp.get(i).getNominativo() + "</td>" + "<td><a target='_blank' href='https://www.google.it/maps/place/" + temp.get(i).getIndirizzo().replace(" ", "+") + "'>" + temp.get(i).getIndirizzo() + "</a></td>" + "<td>" + temp.get(i).getTelefono() + "</td>" + "<td style='text-align: center;'><a class='richiediPrestazione' href='gestionePrestazioni?cmd=richiediPrestazione&idErogatore=" + temp.get(i).getIdUtente() + "&idFruitore=" + ((Utente)request.getSession().getAttribute("LOGGED_USER")).getIdUtente() + "'><i class=\"fas fa-check-circle\"></i></a></td>" + "</tr>";
 				}
 				
 				

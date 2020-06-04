@@ -15,8 +15,22 @@ public class Utente
 	private int oreFruite;
 	private int oreErogate;
 	private ArrayList<Categoria> categorie;
-	
-	
+
+
+	public Utente(int idUtente, String email, String password, String nominativo, String indirizzo, String telefono, int tipoUtente, int idZona, ArrayList<Categoria> categorie) 
+	{
+		this.idUtente = idUtente;
+		this.email = email;
+		this.password = password;
+		this.nominativo = nominativo;
+		this.indirizzo = indirizzo;
+		this.telefono = telefono;
+		this.tipoUtente = tipoUtente;
+		this.idZona = idZona;
+		this.categorie = categorie;
+	}
+
+
 	public Utente(int idUtente, String email, String password, String nominativo, String indirizzo, String telefono, int tipoUtente, int idZona) 
 	{
 		this.idUtente = idUtente;
@@ -58,8 +72,9 @@ public class Utente
 	}
 	
 	
-	public Utente(String nominativo, String indirizzo, String telefono) 
+	public Utente(int idUtente, String nominativo, String indirizzo, String telefono) 
 	{
+		this.idUtente = idUtente;
 		this.nominativo = nominativo;
 		this.indirizzo = indirizzo;
 		this.telefono = telefono;

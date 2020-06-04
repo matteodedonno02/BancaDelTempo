@@ -290,7 +290,7 @@ public class ManagerDB
 			ResultSet rs = ps.executeQuery();
 			while(rs.next())
 			{
-				temp.add(new Utente(rs.getString("nominativo"), rs.getString("indirizzo"), rs.getString("telefono")));
+				temp.add(new Utente(rs.getInt("idUtente"), rs.getString("nominativo"), rs.getString("indirizzo"), rs.getString("telefono")));
 			}
 		} 
 		catch (Exception e) 
@@ -456,7 +456,7 @@ public class ManagerDB
 			ResultSet rs = ps.executeQuery();
 			while(rs.next())
 			{
-				temp.add(new Utente(rs.getString("nominativo"), rs.getString("indirizzo"), rs.getString("telefono")));
+				temp.add(new Utente(rs.getInt("idUtente"), rs.getString("nominativo"), rs.getString("indirizzo"), rs.getString("telefono")));
 			}
 		} 
 		catch (Exception e) 
@@ -527,6 +527,140 @@ public class ManagerDB
 			PreparedStatement ps = conn.prepareStatement(query);
 			ps.setInt(1, idCategoria);
 			ps.setInt(2, idUtente);
+			ps.execute();
+		} 
+		catch (Exception e) 
+		{
+			e.printStackTrace();
+		}
+	}
+	
+	
+	public ArrayList<Utente> utentiConCategorie()
+	{
+		ArrayList<Utente> temp = new ArrayList<Utente>();
+		
+		
+		try 
+		{
+			String query = "SELECT * FROM utenti u";
+			PreparedStatement ps = conn.prepareStatement(query);
+			
+			
+			ResultSet rs = ps.executeQuery();
+			while(rs.next())
+			{
+				ArrayList<Categoria> categorie = new ArrayList<Categoria>();
+				String query2 = "SELECT * FROM "
+						+ "(utenti u INNER JOIN categorie_utenti cu ON u.idUtente = cu.IdUtente) "
+						+ "INNER JOIN categorie c ON c.idCategoria = cu.idCategoria "
+						+ "WHERE u.idUtente = ?";
+				PreparedStatement ps2 = conn.prepareStatement(query2);
+				ps2.setInt(1, rs.getInt("idUtente"));
+				ResultSet rs2 = ps2.executeQuery();
+				while(rs2.next())
+				{
+					categorie.add(new Categoria(rs2.getInt("idCategoria"), rs2.getString("descrizione")));
+				}
+				
+				
+				temp.add(new Utente(rs.getInt("idUtente"), rs.getString("email"), rs.getString("password"), rs.getString("nominativo"), rs.getString("indirizzo"), rs.getString("telefono"), rs.getInt("tipoUtente"), rs.getInt("idZona"), categorie));
+			}
+		} 
+		catch (Exception e) 
+		{
+			e.printStackTrace();
+		}
+		
+		
+		return temp;
+	}
+	
+	
+	public void cancellaUtente(int idUtente)
+	{
+		try 
+		{
+			String query = "DELETE FROM categorie_utenti WHERE idUtente = ?";
+			PreparedStatement ps = conn.prepareStatement(query);
+			ps.setInt(1, idUtente);
+			ps.execute();
+			
+			
+			query = "DELETE FROM prestazioni WHERE idErogatore = ? OR idFruitore = ?";
+			ps = conn.prepareStatement(query);
+			ps.setInt(1, idUtente);
+			ps.setInt(2, idUtente);
+			ps.execute();
+			
+			
+			query = "DELETE FROM utenti WHERE idUtente = ?";
+			ps = conn.prepareStatement(query);
+			ps.setInt(1, idUtente);
+			ps.execute();
+		} 
+		catch (Exception e) 
+		{
+			e.printStackTrace();
+		}
+	}
+	
+	
+	public Utente utente(int idUtente)
+	{
+		Utente temp = null;
+		
+		
+		try 
+		{
+			String query = "SELECT * FROM utenti WHERE idUtente = ?";
+			PreparedStatement ps = conn.prepareStatement(query);
+			ps.setInt(1, idUtente);
+			
+			
+			ResultSet rs = ps.executeQuery();
+			if(rs.next())
+			{
+				ArrayList<Categoria> categorie = new ArrayList<Categoria>();
+				String query2 = "SELECT * FROM (utenti u INNER JOIN categorie_utenti cu ON u.idUtente = cu.idUtente) "
+						+ "INNER JOIN categorie c ON c.idCategoria = cu.idCategoria "
+						+ "WHERE u.idUtente = ?";
+				PreparedStatement ps2 = conn.prepareStatement(query2);
+				ps2.setInt(1, idUtente);
+				ResultSet rs2 = ps2.executeQuery();
+				while(rs2.next())
+				{
+					categorie.add(new Categoria(rs2.getInt("idCategoria"), rs2.getString("descrizione")));
+				}
+				
+				
+				temp = new Utente(idUtente, rs.getString("email"), rs.getString("password"), rs.getString("nominativo"), rs.getString("indirizzo"), rs.getString("telefono"), rs.getInt("tipoUtente"), rs.getInt("idZona"), categorie);
+			}
+		} 
+		catch (Exception e) 
+		{
+			e.printStackTrace();
+		}
+		
+		
+		return temp;
+	}
+	
+	
+	public void modificaUtente(Utente temp)
+	{
+		try 
+		{
+			String query = "UPDATE utenti SET "
+					+ "nominativo = ?,"
+					+ "email = ?, "
+					+ "telefono = ? "
+					+ "WHERE idUtente = ?";
+			PreparedStatement ps = conn.prepareStatement(query);
+			ps.setString(1, temp.getNominativo());
+			ps.setString(2, temp.getEmail());
+			ps.setString(3, temp.getTelefono());
+			ps.setInt(4, temp.getIdUtente());
 			ps.execute();
 		} 
 		catch (Exception e) 

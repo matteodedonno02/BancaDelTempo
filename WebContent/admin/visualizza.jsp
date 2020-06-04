@@ -6,9 +6,10 @@
     pageEncoding="ISO-8859-1"%>
 <%!
 	Utente utente;
-	ArrayList<Utente> utenti;
 	Properties prop;
 	ManagerDB db;
+	String visualizza;
+	ArrayList<Utente> utenti;
 %>
 <%
 	utente = (Utente)session.getAttribute("LOGGED_USER");
@@ -19,17 +20,32 @@
 	}
 	
 	
+	visualizza = request.getParameter("elemento");
+	
+	
 	prop = (Properties)getServletContext().getAttribute("PROPERTIES");
 	db = new ManagerDB(prop.getProperty("db.host"), prop.getProperty("db.port"), prop.getProperty("db.database"), prop.getProperty("db.user"), prop.getProperty("db.password"));
-	utenti = db.listaUtenti();
+	
+	
+	if(visualizza.equals("utenti"))
+	{
+		utenti = db.utentiConCategorie();
+	}
+	
+	
+	
 	db.chiudiConnessione();
+	
+	
+	
+	
 %>
 <!DOCTYPE html>
 <html>
 <head>
   <meta charset="utf-8">
   <meta http-equiv="X-UA-Compatible" content="IE=edge">
-  <title>Banca Del Tempo | Soci in debito</title>
+  <title>Banca Del Tempo | Visualizza</title>
   <!-- Tell the browser to be responsive to screen width -->
   <meta name="viewport" content="width=device-width, initial-scale=1">
 
@@ -159,7 +175,7 @@
         {
         %>
         	<li class="nav-item">
-	            <a href="sociindebito.jsp" class="nav-link active">
+	            <a href="../sociindebito.jsp" class="nav-link">
 	              <i class="nav-icon fas fa-history"></i>
 	              <p>
 	                Soci in debito
@@ -167,7 +183,7 @@
 	            </a>
 	          </li>
 	          <li class="nav-item">
-	            <a href="richiediprestazione.jsp" class="nav-link">
+	            <a href="../richiediprestazione.jsp" class="nav-link">
 	              <i class="nav-icon fas fa-th-list"></i>
 	              <p>
 	                Richiedi prestazione
@@ -175,7 +191,7 @@
 	            </a>
 	          </li>
 	          <li class="nav-item">
-	            <a href="socisegreteria.jsp" class="nav-link">
+	            <a href="../socisegreteria.jsp" class="nav-link">
 	              <i class="nav-icon fas fa-print"></i>
 	              <p>
 	                Soci segreteria
@@ -183,7 +199,7 @@
 	            </a>
 	          </li>
 	          <li class="nav-item">
-		          <a href="gestioneUtenti?cmd=logout" class="nav-link">
+		          <a href="../gestioneUtenti?cmd=logout" class="nav-link">
 		              <i class="nav-icon fas fa-sign-out-alt"></i>
 		              <p>
 		                Esci
@@ -191,6 +207,33 @@
 		          </a>
 	          </li>
         <%
+	        if(utente.getTipoUtente() == 1)
+	    	{
+	    	%>
+	    		<li class="nav-header">SEZIONE AMMINISTRATORE</li>
+	    		<li class="nav-item">
+		            <%
+		            if(visualizza.equals("utenti"))
+		            {
+		            %>
+		            	<a href="visualizza.jsp?elemento=utenti" class="nav-link active">
+		            <%
+		            }
+		            else
+		            {
+		            %>
+		            	<a href="visualizza.jsp?elemento=utenti" class="nav-link">
+		            <%
+		            }
+		            %>
+		              <i class="nav-icon fas fa-users"></i>
+		              <p>
+		                Lista utenti
+		              </p>
+		            </a>
+		          </li>
+	    	<%
+	    	}
         }
         %>
           
@@ -208,7 +251,14 @@
       <div class="container-fluid">
         <div class="row mb-2">
           <div class="col-sm-6">
-            <h1>Soci in debito</h1>
+            <%
+            if(visualizza.equals("utenti"))
+            {
+           	%>
+           		<h1>Lista utenti</h1>
+           	<%
+            }
+            %>
           </div>
         </div>
       </div><!-- /.container-fluid -->
@@ -222,31 +272,51 @@
             <!-- /.card-header -->
             <div class="card-body">
               <table id="example2" class="table table-bordered table-hover">
-                <thead>
-                <tr>
-                  <th>Nominativo</th>
-                  <th>Telefono</th>
-                  <th>Ore fruite</th>
-                  <th>Ore erogate</th>
-                  <th>Ore di debito</th>
-                </tr>
-                </thead>
-                <tbody>
-<%--                 <% --%>
-//                 for(int i = 0; i < sociInDebito.size(); i ++)
-//                 {
-<%--                 %> --%>
-<!--                 	<tr> -->
-<%-- 		               	<td><input class="clearinput" type="text" value="<%=sociInDebito.get(i).getNominativo() %>"></input></td> --%>
-<%-- 		               	<td><%=sociInDebito.get(i).getTelefono() %></td> --%>
-<%-- 		               	<td><%=sociInDebito.get(i).getOreFruite() %></td> --%>
-<%-- 		               	<td><%=sociInDebito.get(i).getOreErogate() %></td> --%>
-<%-- 		               	<td><%=sociInDebito.get(i).getOreFruite() -  sociInDebito.get(i).getOreErogate()%></td> --%>
-<!--                 	</tr> -->
-<%--                 <% --%>
-//                 }
-<%--                 %> --%>
-<!--                 </tbody> -->
+                <%
+                if(visualizza.equals("utenti"))
+                {
+                %>
+                	<thead>
+	                <tr>
+	                  <th>Nominativo</th>
+	                  <th>Email</th>
+	                  <th>Indirizzo</th>
+	                  <th>Telefono</th>
+	                  <th>Categorie</th>
+	                  <th>Modifica</th>
+	                  <th>Elimina</th>
+	                </tr>
+	                </thead>
+	                <tbody>
+	                <%
+	                for(int i = 0; i < utenti.size(); i ++)
+	                {
+	                %>
+	                	<tr>
+			               	<td><%=utenti.get(i).getNominativo() %></td>
+			               	<td><%=utenti.get(i).getEmail() %></td>
+			               	<td><%=utenti.get(i).getIndirizzo() %></td>
+			               	<td><%=utenti.get(i).getTelefono() %></td>
+			               	<td>
+			               	<%
+			               	for(int j = 0; j < utenti.get(i).getCategorie().size(); j ++)
+			               	{
+			               	%>
+			               		<%=utenti.get(i).getCategorie().get(j).getDescrizione() %><br>
+			               	<%
+			               	}
+			               	%>
+			               	</td>
+			               	<td style="text-align: center;"><a href="modifica.jsp?elemento=utenti&idUtente=<%=utenti.get(i).getIdUtente() %>"><i class="fas fa-edit"></i></a></td>
+			               	<td style="text-align: center;"><a href="../gestioneUtenti?cmd=cancellaUtente&idUtente=<%=utenti.get(i).getIdUtente() %>"><i class="far fa-trash-alt"></i></a></td>
+	                	</tr>
+	                <%
+	                }
+	                %>
+                <%
+                }
+                %>
+                </tbody>
               </table>
             </div>
             <!-- /.card-body -->
