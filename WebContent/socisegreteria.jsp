@@ -206,9 +206,17 @@
 		          </li>
 		          <li class="nav-item">
 		            <a href="admin/visualizza.jsp?elemento=categorie" class="nav-link">
-		              <i class="nav-icon fas fa-users"></i>
+		              <i class="nav-icon fas fa-layer-group"></i>
 		              <p>
 		                Lista categorie
+		              </p>
+		            </a>
+		          </li>
+		          <li class="nav-item">
+		            <a href="admin/visualizza.jsp?elemento=prestazioni" class="nav-link">
+		              <i class="nav-icon fas fa-people-carry"></i>
+		              <p>
+		                Lista prestazioni
 		              </p>
 		            </a>
 		          </li>

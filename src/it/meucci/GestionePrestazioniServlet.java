@@ -25,7 +25,32 @@ public class GestionePrestazioniServlet extends HttpServlet
 	
 	protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException 
 	{
+		String cmd = request.getParameter("cmd");
 		
+		
+		switch (cmd) 
+		{
+			case "cancellaPrestazione":
+			{
+				if(((Utente)request.getSession().getAttribute("LOGGED_USER")).getTipoUtente() == 0)
+				{
+					response.sendRedirect("index.jsp");
+					return;
+				}
+				
+				
+				int idPrestazione = Integer.parseInt(request.getParameter("idPrestazione"));
+				Properties prop = (Properties)getServletContext().getAttribute("PROPERTIES");
+				ManagerDB db = new ManagerDB(prop.getProperty("db.host"), prop.getProperty("db.port"), prop.getProperty("db.database"), prop.getProperty("db.user"), prop.getProperty("db.password"));
+				db.cancellaPrestazione(idPrestazione);
+				db.chiudiConnessione();
+				response.sendRedirect("admin/visualizza.jsp?elemento=prestazioni");
+			}
+			break;
+	
+			default:
+			break;
+		}
 	}
 
 	

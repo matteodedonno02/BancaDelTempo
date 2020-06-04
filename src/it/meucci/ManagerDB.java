@@ -766,6 +766,89 @@ public class ManagerDB
 	}
 	
 	
+	public ArrayList<Prestazione> prestazioni()
+	{
+		ArrayList<Prestazione> temp = new ArrayList<Prestazione>();
+		
+		
+		try 
+		{
+			String query = "SELECT *, DATE_FORMAT(data, '%d/%m/%Y') dataFormattata FROM prestazioni";
+			PreparedStatement ps = conn.prepareStatement(query);
+			ResultSet rs = ps.executeQuery();
+			while(rs.next())
+			{
+				Utente fruitore = null;
+				Utente erogatore = null;
+				Categoria categoria = null;
+				String query2 = "SELECT * FROM utenti u "
+						+ "INNER JOIN "
+						+ "prestazioni p ON u.idUtente = p.idFruitore "
+						+ "WHERE p.idPrestazione = ?";
+				PreparedStatement ps2 = conn.prepareStatement(query2);
+				ps2.setInt(1, rs.getInt("idPrestazione"));
+				ResultSet rs2 = ps2.executeQuery();
+				if(rs2.next())
+				{
+					fruitore = new Utente(rs2.getInt("idUtente"), rs2.getString("nominativo"), rs2.getString("indirizzo"), rs2.getString("telefono"));
+				}
+				
+				
+				query2 = "SELECT * FROM utenti u "
+						+ "INNER JOIN "
+						+ "prestazioni p ON u.idUtente = p.idErogatore "
+						+ "WHERE p.idPrestazione = ?";
+				ps2 = conn.prepareStatement(query2);
+				ps2.setInt(1, rs.getInt("idPrestazione"));
+				rs2 = ps2.executeQuery();
+				if(rs2.next())
+				{
+					erogatore = new Utente(rs2.getInt("idUtente"), rs2.getString("nominativo"), rs2.getString("indirizzo"), rs2.getString("telefono"));
+				}
+				
+				
+				query2 = "SELECT * FROM categorie c "
+						+ "INNER JOIN prestazioni p ON c.idCategoria = p.idCategoria "
+						+ "WHERE p.idPrestazione = ?";
+				ps2 = conn.prepareStatement(query2);
+				ps2.setInt(1, rs.getInt("idPrestazione"));
+				rs2 = ps2.executeQuery();
+				if(rs2.next())
+				{
+					categoria = new Categoria(rs2.getInt("idCategoria"), rs2.getString("descrizione"));
+				}
+				
+				
+				temp.add(new Prestazione(rs.getInt("idPrestazione"), rs.getString("dataFormattata"), rs.getInt("ore"), rs.getString("descrizione"), rs.getInt("statoPrestazione"), categoria, fruitore, erogatore));
+			}
+		} 
+		catch (Exception e) 
+		{
+			e.printStackTrace();
+		}
+		
+		
+		return temp;
+	}
+	
+	
+	public void cancellaPrestazione(int idPrestazione)
+	{
+		try 
+		{
+			String query = "DELETE FROM prestazioni "
+					+ "WHERE idPrestazione = ?";
+			PreparedStatement ps = conn.prepareStatement(query);
+			ps.setInt(1, idPrestazione);
+			ps.execute();
+		} 
+		catch (Exception e) 
+		{
+			e.printStackTrace();
+		}
+	}
+	
+	
 	public void chiudiConnessione()
 	{
 		try 

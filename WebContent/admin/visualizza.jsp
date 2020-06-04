@@ -1,3 +1,4 @@
+<%@page import="it.meucci.Prestazione"%>
 <%@page import="it.meucci.Categoria"%>
 <%@page import="java.util.Properties"%>
 <%@page import="it.meucci.ManagerDB"%>
@@ -12,6 +13,7 @@
 	String visualizza;
 	ArrayList<Utente> utenti;
 	ArrayList<Categoria> categorie;
+	ArrayList<Prestazione> prestazioni;
 %>
 <%
 
@@ -44,6 +46,10 @@
 	else if(visualizza.equals("categorie"))
 	{
 		categorie = db.categorie();
+	}
+	else if(visualizza.equals("prestazioni"))
+	{
+		prestazioni = db.prestazioni();
 	}
 	
 	
@@ -258,9 +264,30 @@
 		            <%
 		            }
 		            %>
-		              <i class="nav-icon fas fa-users"></i>
+		              <i class="nav-icon fas fa-layer-group"></i>
 		              <p>
 		                Lista categorie
+		              </p>
+		            </a>
+		          </li>
+		          <li class="nav-item">
+		          	<%
+		          	if(visualizza.equals("prestazioni"))
+		            {
+		            %>
+		            	<a href="visualizza.jsp?elemento=prestazioni" class="nav-link active">
+		            <%
+		            }
+		            else
+		            {
+		            %>
+		            	<a href="visualizza.jsp?elemento=prestazioni" class="nav-link">
+		            <%
+		            }
+		            %>
+		              <i class="nav-icon fas fa-people-carry"></i>
+		              <p>
+		                Lista prestazioni
 		              </p>
 		            </a>
 		          </li>
@@ -283,20 +310,7 @@
       <div class="container-fluid">
         <div class="row mb-2">
           <div class="col-sm-6">
-            <%
-            if(visualizza.equals("utenti"))
-            {
-           	%>
-           		<h1>Lista utenti</h1>
-           	<%
-            }
-            else if(visualizza.equals("categorie"))
-            {
-           	%>
-           		<h1>Lista categorie</h1>
-           	<%
-            }
-            %>
+           	<h1>Lista <%=visualizza %></h1>
           </div>
         </div>
       </div><!-- /.container-fluid -->
@@ -384,6 +398,64 @@
 			               	<td><%=categorie.get(i).getDescrizione() %></td>
 			               	<td style="text-align: center;"><a href="modifica.jsp?elemento=categorie&idCategoria=<%=categorie.get(i).getIdCategoria() %>"><i class="fas fa-edit"></i></a></td>
 			               	<td style="text-align: center;"><a href="../gestioneCategorie?cmd=cancellaCategoria&idCategoria=<%=categorie.get(i).getIdCategoria() %>"><i class="far fa-trash-alt"></i></a></td>
+	                	</tr>
+	                <%
+	                }
+	                %>
+                <%
+                }
+                else if(visualizza.equals("prestazioni"))
+                {
+                %>
+                	<thead>
+	                <tr>
+	                  <th>Date</th>
+	                  <th>Ore</th>
+	                  <th>Descrizione</th>
+	                  <th>Stato</th>
+	                  <th>Fruitore</th>
+	                  <th>Erogatore</th>
+	                  <th>Categoria</th>
+	                  <th>Modifica</th>
+	                  <th>Elimina</th>
+	                </tr>
+	                </thead>
+	                <tbody>
+	                <%
+	                for(int i = 0; i < prestazioni.size(); i ++)
+	                {
+	                %>
+	                	<tr>
+			               	<td><%=prestazioni.get(i).getDataFormattata() %></td>
+			               	<td><%=prestazioni.get(i).getOre() %></td>
+			               	<td><%=prestazioni.get(i).getDescrizione() %></td>
+			               	<td>
+			               	<%
+			               	if(prestazioni.get(i).getStatoPrestazione() == 0)
+			               	{
+			               	%>
+			               		Da approvare
+			               	<%
+			               	}
+			               	else if(prestazioni.get(i).getStatoPrestazione() == 1)
+			               	{
+			               	%>
+			               		In corso
+			               	<%
+			               	}
+			               	else if(prestazioni.get(i).getStatoPrestazione() == 2)
+			               	{
+			               	%>
+			               		Finita
+			               	<%
+			               	}
+			               	%>
+			               	</td>
+			               	<td><%=prestazioni.get(i).getFruitore().getNominativo() %></td>
+			               	<td><%=prestazioni.get(i).getErogatore().getNominativo() %></td>
+			               	<td><%=prestazioni.get(i).getCategoria().getDescrizione() %></td>
+			               	<td style="text-align: center;"><a href="modifica.jsp?elemento=utenti&idUtente="><i class="fas fa-edit"></i></a></td>
+			               	<td style="text-align: center;"><a href="../gestionePrestazioni?cmd=cancellaPrestazione&idPrestazione=<%=prestazioni.get(i).getIdPrestazione() %>"><i class="far fa-trash-alt"></i></a></td>
 	                	</tr>
 	                <%
 	                }
