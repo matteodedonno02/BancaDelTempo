@@ -290,7 +290,7 @@ public class ManagerDB
 			ResultSet rs = ps.executeQuery();
 			while(rs.next())
 			{
-				temp.add(new Utente(rs.getInt("idUtente"), rs.getString("nominativo"), rs.getString("indirizzo"), rs.getString("telefono")));
+				temp.add(new Utente(rs.getInt("idUtente"), rs.getString("nominativo"), rs.getString("indirizzo"), rs.getString("telefono"), rs.getString("email")));
 			}
 		} 
 		catch (Exception e) 
@@ -456,7 +456,7 @@ public class ManagerDB
 			ResultSet rs = ps.executeQuery();
 			while(rs.next())
 			{
-				temp.add(new Utente(rs.getInt("idUtente"), rs.getString("nominativo"), rs.getString("indirizzo"), rs.getString("telefono")));
+				temp.add(new Utente(rs.getInt("idUtente"), rs.getString("nominativo"), rs.getString("indirizzo"), rs.getString("telefono"), rs.getString("email")));
 			}
 		} 
 		catch (Exception e) 
@@ -790,7 +790,7 @@ public class ManagerDB
 				ResultSet rs2 = ps2.executeQuery();
 				if(rs2.next())
 				{
-					fruitore = new Utente(rs2.getInt("idUtente"), rs2.getString("nominativo"), rs2.getString("indirizzo"), rs2.getString("telefono"));
+					fruitore = new Utente(rs2.getInt("idUtente"), rs2.getString("nominativo"), rs2.getString("indirizzo"), rs2.getString("telefono"), rs2.getString("email"));
 				}
 				
 				
@@ -803,7 +803,7 @@ public class ManagerDB
 				rs2 = ps2.executeQuery();
 				if(rs2.next())
 				{
-					erogatore = new Utente(rs2.getInt("idUtente"), rs2.getString("nominativo"), rs2.getString("indirizzo"), rs2.getString("telefono"));
+					erogatore = new Utente(rs2.getInt("idUtente"), rs2.getString("nominativo"), rs2.getString("indirizzo"), rs2.getString("telefono"), rs2.getString("email"));
 				}
 				
 				
@@ -846,6 +846,74 @@ public class ManagerDB
 		{
 			e.printStackTrace();
 		}
+	}
+	
+	
+	public Prestazione prestazione(int idPrestazione)
+	{
+		Prestazione temp = null;
+		
+		
+		try 
+		{
+			String query = "SELECT * FROM prestazioni "
+					+ "WHERE idPrestazione = ?";
+			PreparedStatement ps = conn.prepareStatement(query);
+			ps.setInt(1, idPrestazione);
+			ResultSet rs = ps.executeQuery();
+			if(rs.next())
+			{
+				Utente fruitore = null;
+				Utente erogatore = null;
+				Categoria categoria = null;
+				String query2 = "SELECT * FROM utenti u "
+						+ "INNER JOIN "
+						+ "prestazioni p ON u.idUtente = p.idFruitore "
+						+ "WHERE p.idPrestazione = ?";
+				PreparedStatement ps2 = conn.prepareStatement(query2);
+				ps2.setInt(1, rs.getInt("idPrestazione"));
+				ResultSet rs2 = ps2.executeQuery();
+				if(rs2.next())
+				{
+					fruitore = new Utente(rs2.getInt("idUtente"), rs2.getString("nominativo"), rs2.getString("indirizzo"), rs2.getString("telefono"), rs2.getString("email"));
+				}
+				
+				
+				query2 = "SELECT * FROM utenti u "
+						+ "INNER JOIN "
+						+ "prestazioni p ON u.idUtente = p.idErogatore "
+						+ "WHERE p.idPrestazione = ?";
+				ps2 = conn.prepareStatement(query2);
+				ps2.setInt(1, rs.getInt("idPrestazione"));
+				rs2 = ps2.executeQuery();
+				if(rs2.next())
+				{
+					erogatore = new Utente(rs2.getInt("idUtente"), rs2.getString("nominativo"), rs2.getString("indirizzo"), rs2.getString("telefono"), rs2.getString("email"));
+				}
+				
+				
+				query2 = "SELECT * FROM categorie c "
+						+ "INNER JOIN prestazioni p ON c.idCategoria = p.idCategoria "
+						+ "WHERE p.idPrestazione = ?";
+				ps2 = conn.prepareStatement(query2);
+				ps2.setInt(1, rs.getInt("idPrestazione"));
+				rs2 = ps2.executeQuery();
+				if(rs2.next())
+				{
+					categoria = new Categoria(rs2.getInt("idCategoria"), rs2.getString("descrizione"));
+				}
+				
+				
+				temp = new Prestazione(rs.getInt("idPrestazione"), rs.getDate("data"), rs.getInt("ore"), rs.getString("descrizione"), rs.getInt("statoPrestazione"), categoria, fruitore, erogatore);
+			}
+		} 
+		catch (Exception e) 
+		{
+			e.printStackTrace();
+		}
+		
+		
+		return temp;
 	}
 	
 	

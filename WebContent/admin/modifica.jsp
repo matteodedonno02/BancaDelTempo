@@ -12,8 +12,11 @@
 	Properties prop;
 	Utente utenteDaModificare;
 	Categoria categoriaDaModificare;
+	Prestazione prestazioneDaModificare;
 	String visualizza;
 	ArrayList<Categoria> categorie;
+	ArrayList<Utente> erogatori;
+	ArrayList<Utente> fruitori;
 %>
 <%
 	utente = (Utente)session.getAttribute("LOGGED_USER");
@@ -51,6 +54,39 @@
 	else if(visualizza.equals("categorie"))
 	{
 		categoriaDaModificare = db.categoria(Integer.parseInt(request.getParameter("idCategoria")));
+	}
+	else if(visualizza.equals("prestazioni"))
+	{
+		prestazioneDaModificare = db.prestazione(Integer.parseInt(request.getParameter("idPrestazione")));
+		erogatori = db.listaUtenti();
+		fruitori = db.listaUtenti();
+		categorie = db.categorie();
+		
+		
+		for(int i = 0; i < erogatori.size(); i ++)
+		{
+			if(erogatori.get(i).getIdUtente() == prestazioneDaModificare.getErogatore().getIdUtente())
+			{
+				erogatori.remove(i);
+				break;
+			}
+		}
+		for(int i = 0; i < fruitori.size(); i ++)
+		{
+			if(fruitori.get(i).getIdUtente() == prestazioneDaModificare.getFruitore().getIdUtente())
+			{
+				fruitori.remove(i);
+				break;
+			}
+		}
+		for(int i = 0; i < categorie.size(); i ++)
+		{
+			if(categorie.get(i).getIdCategoria() == prestazioneDaModificare.getCategoria().getIdCategoria())
+			{
+				categorie.remove(i);
+				break;
+			}
+		}
 	}
 	
 	
@@ -278,6 +314,12 @@
             	<h1>Modifica categoria</h1>
             <%
             }
+            else if(visualizza.equals("prestazioni"))
+            {
+            %>
+            	<h1>Modifica prestazione</h1>
+            <%
+            }
             %>
           </div>
         </div>
@@ -408,6 +450,97 @@
 	          <!-- /.col -->
 	        </div>
         <%
+        }
+        else if(visualizza.equals("prestazioni"))
+        {
+       	%>
+       		<div class="row">
+	          <div class="col-md-12">
+	
+	            <!-- Profile Image -->
+	            <div class="card card-primary card-outline">
+	              <div class="card-body box-profile">
+	                <div class="text-center">
+	                </div>
+	                
+	                <form autocomplete="off" action="../gestionePrestazioni" method="post">
+		                <input type="hidden" name="cmd" value="modificaPrestazione">
+		                <input type="hidden" name="idCategoria" value="<%=prestazioneDaModificare.getIdPrestazione() %>">
+			
+		                <ul class="list-group list-group-unbordered mb-3">
+		                  <li class="list-group-item">
+		                    <b>Descrizione</b> <a class="float-right"><input type="email" class="clearinput" required="true" style="text-align: right;" name="txtDescrizione" value="<%=prestazioneDaModificare.getDescrizione() %>"></a>
+		                  </li>
+		                  <li class="list-group-item">
+		                    <b>Data</b> <a class="float-right"><input type="date" class="clearinput" required="true" style="text-align: right;" name="txtData" value="<%=prestazioneDaModificare.getData() %>"></a>
+		                  </li>
+		                  <li class="list-group-item">
+		                    <b>Ore</b> <a class="float-right"><input type="number" min="1" class="clearinput" required="true" style="text-align: right;" name="txtOre" value="<%=prestazioneDaModificare.getOre() %>"></a>
+		                  </li>
+		                  <li class="list-group-item">
+		                    <b>Fruitore</b> 
+		                    <a class="float-right">
+		                    	<select class="form-control" name="idFruitore" required="true">
+									<option selected="true" value="<%=prestazioneDaModificare.getFruitore().getIdUtente() %>"><%=prestazioneDaModificare.getFruitore().getNominativo() %> - <%=prestazioneDaModificare.getFruitore().getEmail() %></option>
+									<%
+									for(int i = 0; i < fruitori.size(); i ++)
+									{
+									%>
+										<option value="<%=fruitori.get(i).getIdUtente() %>"><%=fruitori.get(i).getNominativo() %> - <%=fruitori.get(i).getEmail() %></option>
+									<%
+									}
+									%>
+								</select>
+		                    </a>
+		                  </li>
+		                  <li class="list-group-item">
+		                    <b>Erogatore</b> 
+		                    <a class="float-right">
+		                    	<select class="form-control" name="idErogatore" required="true">
+									<option selected="true" value="<%=prestazioneDaModificare.getErogatore().getIdUtente() %>"><%=prestazioneDaModificare.getErogatore().getNominativo() %> - <%=prestazioneDaModificare.getErogatore().getEmail() %></option>
+									<%
+									for(int i = 0; i < erogatori.size(); i ++)
+									{
+									%>
+										<option value="<%=erogatori.get(i).getIdUtente() %>"><%=erogatori.get(i).getNominativo() %> - <%=erogatori.get(i).getEmail() %></option>
+									<%
+									}
+									%>
+								</select>
+		                    </a>
+		                  </li>
+		                  <li class="list-group-item">
+		                    <b>Categoria</b> 
+		                    <a class="float-right">
+		                    	<select class="form-control" name="idCategoria" required="true">
+									<option selected="true" value="<%=prestazioneDaModificare.getCategoria().getIdCategoria() %>"><%=prestazioneDaModificare.getCategoria().getDescrizione() %></option>
+									<%
+									for(int i = 0; i < categorie.size(); i ++)
+									{
+									%>
+										<option value="<%=categorie.get(i).getIdCategoria() %>"><%=categorie.get(i).getDescrizione() %></option>
+									<%
+									}
+									%>
+								</select>
+		                    </a>
+		                  </li>
+		                  <div class="col-4">
+			                  <input type="submit" class="btn btn-primary btn-block" value="Salva">
+			              </div>
+		                </ul>
+		              </form>
+		
+		                
+	                </form>
+	              </div>
+	              <!-- /.card-body -->
+	            </div>
+	            <!-- /.card -->
+	          </div>
+	          <!-- /.col -->
+	        </div>
+       	<%	
         }
         %>
         <!-- /.row -->

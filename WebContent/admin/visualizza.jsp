@@ -454,7 +454,7 @@
 			               	<td><%=prestazioni.get(i).getFruitore().getNominativo() %></td>
 			               	<td><%=prestazioni.get(i).getErogatore().getNominativo() %></td>
 			               	<td><%=prestazioni.get(i).getCategoria().getDescrizione() %></td>
-			               	<td style="text-align: center;"><a href="modifica.jsp?elemento=utenti&idUtente="><i class="fas fa-edit"></i></a></td>
+			               	<td style="text-align: center;"><a href="modifica.jsp?elemento=prestazioni&idPrestazione=<%=prestazioni.get(i).getIdPrestazione() %>"><i class="fas fa-edit"></i></a></td>
 			               	<td style="text-align: center;"><a href="../gestionePrestazioni?cmd=cancellaPrestazione&idPrestazione=<%=prestazioni.get(i).getIdPrestazione() %>"><i class="far fa-trash-alt"></i></a></td>
 	                	</tr>
 	                <%

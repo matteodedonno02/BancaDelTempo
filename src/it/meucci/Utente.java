@@ -72,12 +72,13 @@ public class Utente
 	}
 	
 	
-	public Utente(int idUtente, String nominativo, String indirizzo, String telefono) 
+	public Utente(int idUtente, String nominativo, String indirizzo, String telefono, String email) 
 	{
 		this.idUtente = idUtente;
 		this.nominativo = nominativo;
 		this.indirizzo = indirizzo;
 		this.telefono = telefono;
+		this.email = email;
 	}
 	
 	

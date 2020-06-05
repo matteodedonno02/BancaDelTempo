@@ -278,7 +278,7 @@ public class GestioneUtentiServlet extends HttpServlet
 				String telefono = request.getParameter("txtTelefono");
 				db.modificaUtente(new Utente(idUtente, email, null, nominativo, null, telefono, 0, 0));
 				db.chiudiConnessione();
-				response.sendRedirect("admin/visualliza.jsp?elemento=utenti");
+				response.sendRedirect("admin/visualizza.jsp?elemento=utenti");
 			}
 			break;
 	
