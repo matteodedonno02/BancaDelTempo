@@ -17,6 +17,7 @@
 	ArrayList<Categoria> categorie;
 	ArrayList<Utente> erogatori;
 	ArrayList<Utente> fruitori;
+	ArrayList<Integer> statiPrestazione;
 %>
 <%
 	utente = (Utente)session.getAttribute("LOGGED_USER");
@@ -84,6 +85,20 @@
 			if(categorie.get(i).getIdCategoria() == prestazioneDaModificare.getCategoria().getIdCategoria())
 			{
 				categorie.remove(i);
+				break;
+			}
+		}
+		
+		
+		statiPrestazione = new ArrayList<Integer>();
+		statiPrestazione.add(0);
+		statiPrestazione.add(1);
+		statiPrestazione.add(2);
+		for(int i = 0; i < statiPrestazione.size(); i ++)
+		{
+			if(statiPrestazione.get(i) == prestazioneDaModificare.getStatoPrestazione())
+			{
+				statiPrestazione.remove(i);
 				break;
 			}
 		}
@@ -465,17 +480,75 @@
 	                
 	                <form autocomplete="off" action="../gestionePrestazioni" method="post">
 		                <input type="hidden" name="cmd" value="modificaPrestazione">
-		                <input type="hidden" name="idCategoria" value="<%=prestazioneDaModificare.getIdPrestazione() %>">
+		                <input type="hidden" name="idPrestazione" value="<%=prestazioneDaModificare.getIdPrestazione() %>">
 			
 		                <ul class="list-group list-group-unbordered mb-3">
-		                  <li class="list-group-item">
-		                    <b>Descrizione</b> <a class="float-right"><input type="email" class="clearinput" required="true" style="text-align: right;" name="txtDescrizione" value="<%=prestazioneDaModificare.getDescrizione() %>"></a>
-		                  </li>
 		                  <li class="list-group-item">
 		                    <b>Data</b> <a class="float-right"><input type="date" class="clearinput" required="true" style="text-align: right;" name="txtData" value="<%=prestazioneDaModificare.getData() %>"></a>
 		                  </li>
 		                  <li class="list-group-item">
 		                    <b>Ore</b> <a class="float-right"><input type="number" min="1" class="clearinput" required="true" style="text-align: right;" name="txtOre" value="<%=prestazioneDaModificare.getOre() %>"></a>
+		                  </li>
+		                  <li class="list-group-item">
+		                    <b>Descrizione</b> <a class="float-right"><input type="text" class="clearinput" required="true" style="text-align: right;" name="txtDescrizione" value="<%=prestazioneDaModificare.getDescrizione() %>"></a>
+		                  </li>
+		                  <li class="list-group-item">
+		                    <b>Stato</b> 
+		                    <a class="float-right">
+		                    	<select class="form-control" name="statoPrestazione" required="true">
+		                    		<option selected="true" value="<%=prestazioneDaModificare.getStatoPrestazione() %>">
+		                    		<%
+					               	if(prestazioneDaModificare.getStatoPrestazione() == 0)
+					               	{
+					               	%>
+					               		Da approvare
+					               	<%
+					               	}
+					               	else if(prestazioneDaModificare.getStatoPrestazione() == 1)
+					               	{
+					               	%>
+					               		In corso
+					               	<%
+					               	}
+					               	else if(prestazioneDaModificare.getStatoPrestazione() == 2)
+					               	{
+					               	%>
+					               		Finita
+					               	<%
+					               	}
+					               	%>
+		                    		</option>
+		                    		<%
+		                    		for(int i = 0; i < statiPrestazione.size(); i ++)
+		                    		{
+		                    		%>
+		                    			<option value="<%=statiPrestazione.get(i) %>">
+		                    			<%
+		                    			if(statiPrestazione.get(i) == 0)
+						               	{
+						               	%>
+						               		Da approvare
+						               	<%
+						               	}
+						               	else if(statiPrestazione.get(i) == 1)
+						               	{
+						               	%>
+						               		In corso
+						               	<%
+						               	}
+						               	else if(statiPrestazione.get(i) == 2)
+						               	{
+						               	%>
+						               		Finita
+						               	<%
+						               	}
+						               	%>
+		                    			</option>
+		                    		<%
+		                    		}
+		                    		%>
+		                    	</select>
+		                    </a>
 		                  </li>
 		                  <li class="list-group-item">
 		                    <b>Fruitore</b> 

@@ -917,6 +917,31 @@ public class ManagerDB
 	}
 	
 	
+	public void modificaPrestazione(Prestazione temp)
+	{
+		try 
+		{
+			String query = "UPDATE prestazioni SET "
+					+ "data = ?, ore = ?, descrizione = ?, statoPrestazione = ?, idFruitore = ?, idErogatore = ?, idCategoria = ? "
+					+ "WHERE idPrestazione = ?";
+			PreparedStatement ps = conn.prepareStatement(query);
+			ps.setDate(1, temp.getData());
+			ps.setInt(2, temp.getOre());
+			ps.setString(3, temp.getDescrizione());
+			ps.setInt(4, temp.getStatoPrestazione());
+			ps.setInt(5, temp.getIdFruitore());
+			ps.setInt(6, temp.getIdErogatore());
+			ps.setInt(7, temp.getIdCategoria());
+			ps.setInt(8, temp.getIdPrestazione());
+			ps.execute();
+		} 
+		catch (Exception e) 
+		{
+			e.printStackTrace();
+		}
+	}
+	
+	
 	public void chiudiConnessione()
 	{
 		try 

@@ -29,7 +29,19 @@ public class Prestazione
 		this.idFruitore = idFruitore;
 	}
 	
-
+	
+	public Prestazione(int idPrestazione, Date data, int ore, String descrizione, int statoPrestazione, int idCategoria, int idErogatore,int idFruitore) 
+	{
+		this.idPrestazione = idPrestazione;
+		this.data = data;
+		this.ore = ore;
+		this.descrizione = descrizione;
+		this.statoPrestazione = statoPrestazione;
+		this.idCategoria = idCategoria;
+		this.idErogatore = idErogatore;
+		this.idFruitore = idFruitore;
+	}
+	
 
 	public Prestazione(int idPrestazione, String dataFormattata, int ore, String descrizione, int statoPrestazione, Categoria categoria, Utente fruitore,Utente erogatore) 
 	{

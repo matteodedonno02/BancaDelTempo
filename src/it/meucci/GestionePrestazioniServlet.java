@@ -1,6 +1,9 @@
 package it.meucci;
 
 import java.io.IOException;
+import java.sql.Date;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Properties;
 
@@ -81,6 +84,7 @@ public class GestionePrestazioniServlet extends HttpServlet
 				
 				
 				ArrayList<Utente> temp = db.sociDaCategoriaEZona(idCategoria, ((Utente)request.getSession().getAttribute("LOGGED_USER")).getIdZona(), ((Utente)request.getSession().getAttribute("LOGGED_USER")).getIdUtente());
+				db.chiudiConnessione();
 				
 				
 				String html = "<div class='card'>" + 
@@ -115,7 +119,38 @@ public class GestionePrestazioniServlet extends HttpServlet
 			
 			case "modificaPrestazione":
 			{
+				if(((Utente)request.getSession().getAttribute("LOGGED_USER")).getTipoUtente() == 0)
+				{
+					response.sendRedirect("index.jsp");
+					return;
+				}
 				
+				
+				int idPrestazione = Integer.parseInt(request.getParameter("idPrestazione"));
+				String descrizione = request.getParameter("txtDescrizione");
+				String temp = request.getParameter("txtData");
+				SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd");
+				Date data = null;
+				try 
+				{
+					data = new Date(formatter.parse(temp).getTime());
+				} 
+				catch (ParseException e) 
+				{
+					e.printStackTrace();
+				}
+				
+				
+				int ore = Integer.parseInt(request.getParameter("txtOre"));
+				int statoPrestazione = Integer.parseInt(request.getParameter("statoPrestazione"));
+				int idFruitore = Integer.parseInt(request.getParameter("idFruitore"));
+				int idErogatore = Integer.parseInt(request.getParameter("idErogatore"));
+				int idCategoria = Integer.parseInt(request.getParameter("idCategoria"));
+				
+				
+				db.modificaPrestazione(new Prestazione(idPrestazione, data, ore, descrizione, statoPrestazione, idCategoria, idErogatore, idFruitore));
+				db.chiudiConnessione();
+				response.sendRedirect("admin/visualizza.jsp?elemento=prestazioni");
 			}
 			break;
 	
