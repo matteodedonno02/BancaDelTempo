@@ -966,6 +966,102 @@ public class ManagerDB
 	}
 	
 	
+	public ArrayList<Prestazione> prestazioniDaApprovare(int idUtente)
+	{
+		ArrayList<Prestazione> temp = new ArrayList<Prestazione>();
+		
+		
+		try 
+		{
+			String query = "SELECT *, DATE_FORMAT(data, '%d/%m/%Y') as dataFormattata, p.descrizione as descrizionePrestazione, c.descrizione as descrizioneCategoria FROM "
+					+ "(utenti u INNER JOIN prestazioni p ON u.idUtente = p.idFruitore) "
+					+ "INNER JOIN "
+					+ "categorie c ON c.idCategoria = p.idCategoria "
+					+ "WHERE p.idErogatore = ? AND p.statoPrestazione = 0 ";
+			PreparedStatement ps = conn.prepareStatement(query);
+			ps.setInt(1, idUtente);
+			ResultSet rs = ps.executeQuery();
+			while(rs.next())
+			{
+				temp.add(new Prestazione(rs.getInt("idPrestazione"), rs.getString("dataFormattata"), rs.getInt("ore"), rs.getString("descrizionePrestazione"), rs.getInt("statoPrestazione"), new Categoria(rs.getInt("idCategoria"), rs.getString("descrizioneCategoria")), new Utente(rs.getString("email"), null, rs.getString("nominativo"), rs.getString("telefono")), null));
+			}
+		} 
+		catch (Exception e) 
+		{
+			e.printStackTrace();
+		}
+		
+		
+		return temp;
+	}
+	
+	
+	public ArrayList<Prestazione> prestazioniDaConcludere(int idUtente)
+	{
+		ArrayList<Prestazione> temp = new ArrayList<Prestazione>();
+		
+		
+		try 
+		{
+			String query = "SELECT *, DATE_FORMAT(data, '%d/%m/%Y') as dataFormattata, p.descrizione as descrizionePrestazione, c.descrizione as descrizioneCategoria FROM "
+					+ "(utenti u INNER JOIN prestazioni p ON u.idUtente = p.idFruitore) "
+					+ "INNER JOIN "
+					+ "categorie c ON c.idCategoria = p.idCategoria "
+					+ "WHERE p.idErogatore = ? AND p.statoPrestazione = 1 ";
+			PreparedStatement ps = conn.prepareStatement(query);
+			ps.setInt(1, idUtente);
+			ResultSet rs = ps.executeQuery();
+			while(rs.next())
+			{
+				temp.add(new Prestazione(rs.getInt("idPrestazione"), rs.getString("dataFormattata"), rs.getInt("ore"), rs.getString("descrizionePrestazione"), rs.getInt("statoPrestazione"), new Categoria(rs.getInt("idCategoria"), rs.getString("descrizioneCategoria")), new Utente(rs.getString("email"), null, rs.getString("nominativo"), rs.getString("telefono")), null));
+			}
+		} 
+		catch (Exception e) 
+		{
+			e.printStackTrace();
+		}
+		
+		
+		return temp;
+	}
+	
+	
+	public void approvaPrestazione(int idPrestazione)
+	{
+		try 
+		{
+			String query = "UPDATE prestazioni "
+					+ "SET statoPrestazione = 1 "
+					+ "WHERE idPrestazione = ?";
+			PreparedStatement ps = conn.prepareStatement(query);
+			ps.setInt(1, idPrestazione);
+			ps.execute();
+		} 
+		catch (Exception e) 
+		{
+			e.printStackTrace();
+		}
+	}
+	
+	
+	public void concludiPrestazione(int idPrestazione)
+	{
+		try 
+		{
+			String query = "UPDATE prestazioni "
+					+ "SET statoPrestazione = 2 "
+					+ "WHERE idPrestazione = ?";
+			PreparedStatement ps = conn.prepareStatement(query);
+			ps.setInt(1, idPrestazione);
+			ps.execute();
+		} 
+		catch (Exception e) 
+		{
+			e.printStackTrace();
+		}
+	}
+	
+	
 	public void chiudiConnessione()
 	{
 		try 

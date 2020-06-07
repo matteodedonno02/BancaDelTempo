@@ -15,6 +15,8 @@
 	int oreErogate;
 	int oreFruite;
 	ArrayList<Prestazione> prestazioniErogate;
+	ArrayList<Prestazione> prestazioniDaApprovare;
+	ArrayList<Prestazione> prestazioniDaConcludere;
 %>
 <%
 	utente = (Utente)session.getAttribute("LOGGED_USER");
@@ -32,6 +34,8 @@
 	oreErogate = db.oreErogate(utente.getIdUtente());
 	oreFruite = db.oreFruite(utente.getIdUtente());
 	prestazioniErogate = db.prestazioniErogate(utente.getIdUtente());
+	prestazioniDaApprovare = db.prestazioniDaApprovare(utente.getIdUtente());
+	prestazioniDaConcludere = db.prestazioniDaConcludere(utente.getIdUtente());
 	db.chiudiConnessione();
 	
 	
@@ -59,11 +63,14 @@
   <link rel="stylesheet" href="plugins/fontawesome-free/css/all.min.css">
   <!-- Ionicons -->
   <link rel="stylesheet" href="https://code.ionicframework.com/ionicons/2.0.1/css/ionicons.min.css">
+  <link rel="stylesheet" href="plugins/datatables-bs4/css/dataTables.bootstrap4.min.css">
+  <link rel="stylesheet" href="plugins/datatables-responsive/css/responsive.bootstrap4.min.css">
   <!-- Theme style -->
   <link rel="stylesheet" href="dist/css/adminlte.min.css">
   <!-- Google Font: Source Sans Pro -->
   <link href="https://fonts.googleapis.com/css?family=Source+Sans+Pro:300,400,400i,700" rel="stylesheet">
   <link rel="shortcut icon" href="dist/img/AdminLTELogo.png" type="image/x-icon">
+  <link href="dist/css/my.css" rel="stylesheet">
 </head>
 <body class="hold-transition sidebar-mini">
 <div class="wrapper">
@@ -306,6 +313,7 @@
                 <ul class="nav nav-pills">
                 	<li class="nav-item"><a class="nav-link active" href="#categorie" data-toggle="tab">Categorie</a></li>
                   <li class="nav-item"><a class="nav-link" href="#prestazionierogate" data-toggle="tab">Prestazioni erogate</a></li>
+                  <li class="nav-item"><a class="nav-link" href="#richieste" data-toggle="tab">Richieste</a></li>
                 </ul>
               </div><!-- /.card-header -->
               <div class="card-body">
@@ -346,7 +354,7 @@
                   </div>
                   <!-- /.tab-pane -->
                   <div class="tab-pane" id="prestazionierogate">
-                  	<table id="example2" class="table table-bordered table-hover">
+                  	<table class="table table-bordered table-hover">
 		                <thead>
 		                <tr>
 		                  <th>Data</th>
@@ -365,6 +373,68 @@
 				               	<td><%=prestazioniErogate.get(i).getOre() %></td>
 				               	<td><%=prestazioniErogate.get(i).getDescrizione() %></td>
 				               	<td><%=prestazioniErogate.get(i).getFruitore().getNominativo() %></td>
+		                	</tr>
+		                <%
+		                }
+		                %>
+		                </tbody>
+		              </table>
+                  </div>
+                  <div class="tab-pane" id="richieste">
+                  	<h5>Prestazioni da approvare</h5>
+                  	<table class="table table-bordered table-hover">
+		                <thead>
+		                <tr>
+		                  <th>Data</th>
+		                  <th>Ore</th>
+		                  <th>Descrizione</th>
+		                  <th>Categoria</th>
+		                  <th>Fruitore</th>
+		                  <th>Approva</th>
+		                </tr>
+		                </thead>
+		                <tbody>
+		                <%
+		                for(int i = 0; i < prestazioniDaApprovare.size(); i ++)
+		                {
+		                %>
+		                	<tr>
+				               	<td><%=prestazioniDaApprovare.get(i).getDataFormattata() %></td>
+				               	<td><%=prestazioniDaApprovare.get(i).getOre() %></td>
+				               	<td><%=prestazioniDaApprovare.get(i).getDescrizione() %></td>
+				               	<td><%=prestazioniDaApprovare.get(i).getCategoria().getDescrizione() %></td>
+				               	<td><%=prestazioniDaApprovare.get(i).getFruitore().getNominativo() %></td>
+				               	<td style="text-align: center;"><a href="gestionePrestazioni?cmd=approvaPrestazione&idPrestazione=<%=prestazioniDaApprovare.get(i).getIdPrestazione() %>"><i class="fas fa-check-circle"></i></a></td>
+		                	</tr>
+		                <%
+		                }
+		                %>
+		                </tbody>
+		              </table>
+		              <h5>Prestazioni da concludere</h5>
+                  	<table class="table table-bordered table-hover">
+		                <thead>
+		                <tr>
+		                  <th>Data</th>
+		                  <th>Ore</th>
+		                  <th>Descrizione</th>
+		                  <th>Categoria</th>
+		                  <th>Fruitore</th>
+		                  <th>Concludi</th>
+		                </tr>
+		                </thead>
+		                <tbody>
+		                <%
+		                for(int i = 0; i < prestazioniDaConcludere.size(); i ++)
+		                {
+		                %>
+		                	<tr>
+				               	<td><%=prestazioniDaConcludere.get(i).getDataFormattata() %></td>
+				               	<td><%=prestazioniDaConcludere.get(i).getOre() %></td>
+				               	<td><%=prestazioniDaConcludere.get(i).getDescrizione() %></td>
+				               	<td><%=prestazioniDaConcludere.get(i).getCategoria().getDescrizione() %></td>
+				               	<td><%=prestazioniDaConcludere.get(i).getFruitore().getNominativo() %></td>
+				               	<td style="text-align: center;"><a href="gestionePrestazioni?cmd=concludiPrestazione&idPrestazione=<%=prestazioniDaConcludere.get(i).getIdPrestazione() %>"><i class="fas fa-check-circle"></i></a></td>
 		                	</tr>
 		                <%
 		                }
@@ -407,7 +477,17 @@
 <script src="dist/js/adminlte.min.js"></script>
 <!-- AdminLTE for demo purposes -->
 <script src="dist/js/demo.js"></script>
+<script src="plugins/datatables/jquery.dataTables.min.js"></script>
+<script src="plugins/datatables-bs4/js/dataTables.bootstrap4.min.js"></script>
+<script src="plugins/datatables-responsive/js/dataTables.responsive.min.js"></script>
+<script src="plugins/datatables-responsive/js/responsive.bootstrap4.min.js"></script>
 <script>
+	if(window.location.href.includes("#richieste"))
+	{
+		$('a[href$="#richieste"]').click();
+	}
+	
+	
 	$(".aggiungiCategoria").click(function(event) 
 	{
 		var idCategoria = event.target.id;
@@ -452,6 +532,27 @@
 			}
 		});
 	});
+	
+	
+	$("table").DataTable({
+	      "paging": true,
+	      "lengthChange": false,
+	      "searching": true,
+	      "ordering": true,
+	      "info": false,
+	      "autoWidth": false,
+	      "responsive": true,
+	      "language": 
+	      {
+	          "zeroRecords": "Nessun dato trovato",
+	          "search": "Cerca",
+	          "paginate": 
+	          {
+	          	"previous": "Precedente",
+	          	"next": "Successivo"
+	          }
+	      }
+	    });
 </script>
 </body>
 </html>

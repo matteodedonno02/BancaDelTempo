@@ -50,6 +50,28 @@ public class GestionePrestazioniServlet extends HttpServlet
 				response.sendRedirect("admin/visualizza.jsp?elemento=prestazioni");
 			}
 			break;
+			
+			
+			case "approvaPrestazione":
+			{
+				Properties prop = (Properties)getServletContext().getAttribute("PROPERTIES");
+				ManagerDB db = new ManagerDB(prop.getProperty("db.host"), prop.getProperty("db.port"), prop.getProperty("db.database"), prop.getProperty("db.user"), prop.getProperty("db.password"));
+				db.approvaPrestazione(Integer.parseInt(request.getParameter("idPrestazione")));
+				db.chiudiConnessione();
+				response.sendRedirect("profilo.jsp#richieste");
+			}
+			break;
+			
+			
+			case "concludiPrestazione":
+			{
+				Properties prop = (Properties)getServletContext().getAttribute("PROPERTIES");
+				ManagerDB db = new ManagerDB(prop.getProperty("db.host"), prop.getProperty("db.port"), prop.getProperty("db.database"), prop.getProperty("db.user"), prop.getProperty("db.password"));
+				db.concludiPrestazione(Integer.parseInt(request.getParameter("idPrestazione")));
+				db.chiudiConnessione();
+				response.sendRedirect("profilo.jsp#richieste");
+			}
+			break;
 	
 			default:
 			break;
