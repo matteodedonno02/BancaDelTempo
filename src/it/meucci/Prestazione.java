@@ -18,6 +18,19 @@ public class Prestazione
 	private Utente erogatore;
 	
 	
+	public Prestazione(int idPrestazione, String dataFormattata, int ore, String descrizione, int statoPrestazione, int idCategoria, int idErogatore, int idFruitore) 
+	{
+		this.idPrestazione = idPrestazione;
+		this.dataFormattata = dataFormattata;
+		this.ore = ore;
+		this.descrizione = descrizione;
+		this.statoPrestazione = statoPrestazione;
+		this.idCategoria = idCategoria;
+		this.idErogatore = idErogatore;
+		this.idFruitore = idFruitore;
+	}
+
+
 	public Prestazione(int idPrestazione, Date data, int ore, String descrizione, int idCategoria, int idErogatore,int idFruitore) 
 	{
 		this.idPrestazione = idPrestazione;
@@ -80,11 +93,12 @@ public class Prestazione
 	}
 
 
-	public Prestazione(Date data, int ore, String descrizione) 
+	public Prestazione(Date data, int ore, String descrizione, Utente fruitore) 
 	{
 		this.data = data;
 		this.ore = ore;
 		this.descrizione = descrizione;
+		this.fruitore = fruitore;
 	}
 	
 

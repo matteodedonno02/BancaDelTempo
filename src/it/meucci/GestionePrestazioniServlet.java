@@ -101,7 +101,7 @@ public class GestionePrestazioniServlet extends HttpServlet
 						"<tbody>";
 				for(int i = 0; i < temp.size(); i ++)
 				{
-					html += "<tr>" + "<td>" + temp.get(i).getNominativo() + "</td>" + "<td><a target='_blank' href='https://www.google.it/maps/place/" + temp.get(i).getIndirizzo().replace(" ", "+") + "'>" + temp.get(i).getIndirizzo() + "</a></td>" + "<td>" + temp.get(i).getTelefono() + "</td>" + "<td style='text-align: center;'><a class='richiediPrestazione' href='gestionePrestazioni?cmd=richiediPrestazione&idErogatore=" + temp.get(i).getIdUtente() + "&idFruitore=" + ((Utente)request.getSession().getAttribute("LOGGED_USER")).getIdUtente() + "'><i class=\"fas fa-check-circle\"></i></a></td>" + "</tr>";
+					html += "<tr>" + "<td>" + temp.get(i).getNominativo() + "</td>" + "<td><a target='_blank' href='https://www.google.it/maps/place/" + temp.get(i).getIndirizzo().replace(" ", "+") + "'>" + temp.get(i).getIndirizzo() + "</a></td>" + "<td>" + temp.get(i).getTelefono() + "</td>" + "<td style='text-align: center;'><form id='risultato" + i + "' action='gestionePrestazioni' method='post'><input type='hidden' name='cmd' value='richiediPrestazione'><input type='hidden' name='idCategoria' value='" + idCategoria + "'><input type='hidden' name='idErogatore' value='" + temp.get(i).getIdUtente() + "'><input type='hidden' name='idFruitore' value='" + ((Utente)request.getSession().getAttribute("LOGGED_USER")).getIdUtente() + "'></form><a href='' class='richiediPrestazione' id='richiediPrestazione" + i + "'><i class=\"fas fa-check-circle\"></i></a></td>" + "</tr>";
 				}
 				
 				
@@ -151,6 +151,22 @@ public class GestionePrestazioniServlet extends HttpServlet
 				db.modificaPrestazione(new Prestazione(idPrestazione, data, ore, descrizione, statoPrestazione, idCategoria, idErogatore, idFruitore));
 				db.chiudiConnessione();
 				response.sendRedirect("admin/visualizza.jsp?elemento=prestazioni");
+			}
+			break;
+			
+			
+			case "richiediPrestazione":
+			{
+				int idCategoria = Integer.parseInt(request.getParameter("idCategoria"));
+				int idFruitore = Integer.parseInt(request.getParameter("idFruitore"));
+				int idErogatore = Integer.parseInt(request.getParameter("idErogatore"));
+				int ore = Integer.parseInt(request.getParameter("txtOre"));
+				String data = request.getParameter("txtData");
+				String descrizione = request.getParameter("txtDescrizione");
+				Prestazione temp = new Prestazione(0, data, ore, descrizione, 0, idCategoria, idErogatore, idFruitore);
+				db.aggiungiPrestazione(temp);
+				db.chiudiConnessione();
+				response.sendRedirect("index.jsp");
 			}
 			break;
 	

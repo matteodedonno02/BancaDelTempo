@@ -57,14 +57,14 @@
           <div class="modal-content">
             <div class="modal-header">
               <h4 class="modal-title">Richiedi prestazione</h4>
-              <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+              <button id="chiudiRichiesta1" type="button" class="close" data-dismiss="modal" aria-label="Close">
                 <span aria-hidden="true">&times;</span>
               </button>
             </div>
             <div class="modal-body">
             	<form autocomplete="off" id="richiesta">
             		<div class="input-group mb-3">
-						<input required="true" min="1" type="number" class="form-control" id="orePrestazione" placeholder="Ore">
+						<input name="txtOre" required="true" min="1" type="number" class="form-control" id="orePrestazione" placeholder="Ore">
 						<div class="input-group-append">
 							<div class="input-group-text">
 								<span class="far fa-clock"></span>
@@ -72,7 +72,7 @@
 						</div>
 					</div>
 					<div class="input-group mb-3">
-						<input required="true" type="date" class="form-control" id="dataPrestazione">
+						<input name="txtData" required="true" type="date" class="form-control" id="dataPrestazione">
 						<div class="input-group-append">
 							<div class="input-group-text">
 								<span class="far fa-calendar-alt"></span>
@@ -80,11 +80,11 @@
 						</div>
 					</div>
 					<div class="form-group">
-                        <textarea required="true" class="form-control" rows="3" id="descrizionePrestazione" placeholder="Descrizione"></textarea>
+                        <textarea name="txtDescrizione" required="true" class="form-control" rows="3" id="descrizionePrestazione" placeholder="Descrizione"></textarea>
                     </div>
             </div>
             <div class="modal-footer justify-content-between">
-              <button type="button" class="btn btn-default" data-dismiss="modal">Chiudi</button>
+              <button id="chiudiRichiesta" type="button" class="btn btn-default" data-dismiss="modal">Chiudi</button>
               <button type="submit" class="btn btn-primary">Richiedi</button>
             </div>
             	</form>
@@ -370,7 +370,7 @@
 <!-- page script -->
 <script>
 	var d = new Date();
-	var day = d.getDay();
+	var day = d.getDate();
 	if($(day).length == 1)
 	{
 		day = 0 + day.toString();
@@ -395,62 +395,80 @@
 		{
 			$("#tabellaRisultati").html(result);
 			$(function () 
-					{
-					    $("#example1").DataTable(	
-					    {
-					      "responsive": true,
-					      "autoWidth": false,
-					    });
-					    $('#example2').DataTable({
-					      "paging": true,
-					      "lengthChange": false,
-					      "searching": false,
-					      "ordering": true,
-					      "info": true,
-					      "autoWidth": false,
-					      "responsive": true,
-					      "language": 
-					      {
-					            "zeroRecords": "Nessun dato trovato",
-					            "paginate": 
-					            {
-					            	"previous": "Precedente",
-					            	"next": "Successivo"
-					            }
-					        }
-					    });
-				  	});
-			$(".richiediPrestazione").click(function()
 			{
-				var element = $(this);
-				$("#modal-default").modal("show");
-				
-				
-				$("#modal-default").on('hidden.bs.modal', function (e) 
-				{
-					if($("#orePrestazione").val() == "" || $("#dataPrestazione").val() == "" || $("#descrizionePrestazione").val() == "")
-					{
-						return;
-					}
-					
-					
-					element.attr("href", element.attr("href") + "&descrizione");
-					var href = element.attr("href");
-					alert(href);
-				})
-				
-				
-				return false;
-			});
-			
-			
-			$("#richiesta").submit(function(e)
-			{
-				$("#modal-default").modal("hide");
-		        e.preventDefault();
-		    });
+			    $("#example1").DataTable(	
+			    {
+			      "responsive": true,
+			      "autoWidth": false,
+			    });
+			    $('#example2').DataTable({
+			      "paging": true,
+			      "lengthChange": false,
+			      "searching": false,
+			      "ordering": true,
+			      "info": true,
+			      "autoWidth": false,
+			      "responsive": true,
+			      "language": 
+			      {
+			            "zeroRecords": "Nessun dato trovato",
+			            "paginate": 
+			            {
+			            	"previous": "Precedente",
+			            	"next": "Successivo"
+			            }
+			        }
+			    });
+			    
+			    
+			    loadScript();
+		  	});
 		}
 	});
+	
+	
+	function loadScript()
+	{
+		$("#chiudiRichiesta, #chiudiRichiesta1").click(function()
+		{
+			$("#richiesta").find("input, textarea").val("");
+		});
+
+
+		
+		var formId;
+		$(".richiediPrestazione").click(function(event)
+		{
+			$("#modal-default").modal("show");
+			formId = $(this).attr("id").replace("richiediPrestazione", "");
+			
+			
+			return false;
+		});
+		
+
+		$("#modal-default").on("hidden.bs.modal", function () 
+		{
+			if($("#richiesta").find("input, textarea").val() == "")
+			{
+				delete formId;
+				$("#richiesta").find("input, textarea").val("");
+				return;	
+			}
+			
+			
+			$("#richiesta").find(":input").clone().appendTo("#risultato" + formId);
+			$("#richiesta").find("input, textarea").val("");
+			$("#risultato" + formId).submit();
+		});
+
+
+		$("#richiesta").submit(function(e)
+		{
+			$("#modal-default").modal("hide");
+		    e.preventDefault();
+		});
+	}
 </script>
 </body>
 </html>

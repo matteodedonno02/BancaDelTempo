@@ -352,6 +352,7 @@
 		                  <th>Data</th>
 		                  <th>Ore</th>
 		                  <th>Descrizione</th>
+		                  <th>Fruitore</th>
 		                </tr>
 		                </thead>
 		                <tbody>
@@ -363,6 +364,7 @@
 				               	<td><%=prestazioniErogate.get(i).getData() %></td>
 				               	<td><%=prestazioniErogate.get(i).getOre() %></td>
 				               	<td><%=prestazioniErogate.get(i).getDescrizione() %></td>
+				               	<td><%=prestazioniErogate.get(i).getFruitore().getNominativo() %></td>
 		                	</tr>
 		                <%
 		                }

@@ -420,8 +420,8 @@ public class ManagerDB
 		{
 			String query = "SELECT * FROM utenti u "
 					+ "INNER JOIN "
-					+ "prestazioni p ON u.idUtente = p.idErogatore "
-					+ "WHERE u.idUtente = ? AND p.statoPrestazione = 2 ORDER BY p.ore DESC";
+					+ "prestazioni p ON u.idUtente = p.idFruitore "
+					+ "WHERE p.idErogatore = ? AND p.statoPrestazione = 2 ORDER BY p.ore DESC";
 			PreparedStatement ps = conn.prepareStatement(query);
 			ps.setInt(1, idUtente);
 			
@@ -429,7 +429,7 @@ public class ManagerDB
 			ResultSet rs = ps.executeQuery();
 			while(rs.next())
 			{
-				temp.add(new Prestazione(rs.getDate("data"), rs.getInt("ore"), rs.getString("descrizione")));
+				temp.add(new Prestazione(rs.getDate("data"), rs.getInt("ore"), rs.getString("descrizione"), new Utente(rs.getString("email"), rs.getString("password"), rs.getString("nominativo"), rs.getString("telefono"))));
 			}
 		} 
 		catch (Exception e) 
@@ -933,6 +933,30 @@ public class ManagerDB
 			ps.setInt(6, temp.getIdErogatore());
 			ps.setInt(7, temp.getIdCategoria());
 			ps.setInt(8, temp.getIdPrestazione());
+			ps.execute();
+		} 
+		catch (Exception e) 
+		{
+			e.printStackTrace();
+		}
+	}
+	
+	
+	public void aggiungiPrestazione(Prestazione temp)
+	{
+		try 
+		{
+			String query = "INSERT INTO prestazioni "
+					+ "(data, ore, descrizione, statoPrestazione, idCategoria, idErogatore, idFruitore) VALUES "
+					+ "(?, ?, ?, ?, ?, ?, ?)";
+			PreparedStatement ps = conn.prepareStatement(query);
+			ps.setString(1, temp.getDataFormattata());
+			ps.setInt(2, temp.getOre());
+			ps.setString(3, temp.getDescrizione());
+			ps.setInt(4, temp.getStatoPrestazione());
+			ps.setInt(5, temp.getIdCategoria());
+			ps.setInt(6, temp.getIdErogatore());
+			ps.setInt(7, temp.getIdFruitore());
 			ps.execute();
 		} 
 		catch (Exception e) 
