@@ -1062,6 +1062,38 @@ public class ManagerDB
 	}
 	
 	
+	public ArrayList<Prestazione> prestazioniFruite(int idUtente)
+	{
+		ArrayList<Prestazione> temp = new ArrayList<Prestazione>();
+		
+		
+		try 
+		{
+			String query = "SELECT * ,DATE_FORMAT(data, '%d/%m/%Y') as dataFormattata, p.descrizione as descrizionePrestazione, c.descrizione as descrizioneCategoria "
+					+ "FROM "
+					+ "(utenti u INNER JOIN prestazioni p ON u.idUtente = p.idErogatore) "
+					+ "INNER JOIN "
+					+ "categorie c ON c.idCategoria = p.idCategoria "
+					+ "WHERE p.idFruitore = ? "
+					+ "ORDER BY p.data DESC";
+			PreparedStatement ps = conn.prepareStatement(query);
+			ps.setInt(1, idUtente);
+			ResultSet rs = ps.executeQuery();
+			while(rs.next())
+			{
+				temp.add(new Prestazione(rs.getInt("idPrestazione"), rs.getString("dataFormattata"), rs.getInt("ore"), rs.getString("descrizionePrestazione"), rs.getInt("statoPrestazione"), new Categoria(rs.getInt("idCategoria"), rs.getString("descrizioneCategoria")), null, new Utente(rs.getString("email"), null, rs.getString("nominativo"), rs.getString("telefono"))));
+			}
+		} 
+		catch (Exception e) 
+		{
+			e.printStackTrace();
+		}
+		
+		
+		return temp;
+	}
+	
+	
 	public void chiudiConnessione()
 	{
 		try 

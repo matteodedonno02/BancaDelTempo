@@ -17,6 +17,7 @@
 	ArrayList<Prestazione> prestazioniErogate;
 	ArrayList<Prestazione> prestazioniDaApprovare;
 	ArrayList<Prestazione> prestazioniDaConcludere;
+	ArrayList<Prestazione> prestazioniFruite;
 %>
 <%
 	utente = (Utente)session.getAttribute("LOGGED_USER");
@@ -36,6 +37,7 @@
 	prestazioniErogate = db.prestazioniErogate(utente.getIdUtente());
 	prestazioniDaApprovare = db.prestazioniDaApprovare(utente.getIdUtente());
 	prestazioniDaConcludere = db.prestazioniDaConcludere(utente.getIdUtente());
+	prestazioniFruite = db.prestazioniFruite(utente.getIdUtente());
 	db.chiudiConnessione();
 	
 	
@@ -93,22 +95,45 @@
 	      <li class="nav-item dropdown">
 	        <a class="nav-link" data-toggle="dropdown" href="#">
 	          <i class="far fa-bell"></i>
-	          <span class="badge badge-warning navbar-badge">1</span>
+	          <span class="badge badge-warning navbar-badge"><%=prestazioniDaApprovare.size() + prestazioniDaConcludere.size() %></span>
 	        </a>
 	        <div class="dropdown-menu dropdown-menu-lg dropdown-menu-right">
-	          <a href="#" class="dropdown-item">
-	            <!-- Message Start -->
-	            <div class="media">
-	              <img src="dist/img/user1-128x128.jpg" alt="User Avatar" class="img-size-50 mr-3 img-circle">
-	              <div class="media-body">
-	                <h3 class="dropdown-item-title">
-	                  Brad Diesel
-	                </h3>
-	                <p class="text-sm">Call me whenever you can...</p>
-	              </div>
-	            </div>
-	            <!-- Message End -->
-	          </a>
+	            <%
+	            for(int i = 0; i < prestazioniDaApprovare.size(); i ++)
+	            {
+	            %>
+	            	<a href="profilo.jsp#richieste" class="dropdown-item">
+	            	<!-- Message Start -->
+		            <div class="media">
+		              <div class="media-body">
+		                <h3 class="dropdown-item-title">
+		                  <b>RICHIESTA DA</b> <%=prestazioniDaApprovare.get(i).getFruitore().getNominativo() %>
+		                </h3>
+		                <p class="text-sm"><%=prestazioniDaApprovare.get(i).getDescrizione() %></p>
+		              </div>
+		            </div>
+		            <!-- Message End -->
+	          		</a>
+	            <%
+	            }
+	            for(int i = 0; i < prestazioniDaConcludere.size(); i ++)
+	            {
+	            %>
+	            	<a href="profilo.jsp#richieste" class="dropdown-item">
+	            	<!-- Message Start -->
+		            <div class="media">
+		              <div class="media-body">
+		                <h3 class="dropdown-item-title">
+		                  <b>DA CONCLUDERE</b> <%=prestazioniDaConcludere.get(i).getFruitore().getNominativo() %>
+		                </h3>
+		                <p class="text-sm"><%=prestazioniDaConcludere.get(i).getDescrizione() %></p>
+		              </div>
+		            </div>
+		            <!-- Message End -->
+	          		</a>
+	            <%
+	            }
+	            %>
 	          <div class="dropdown-divider"></div>
 	        </div>
 	      </li>
@@ -314,6 +339,7 @@
                 	<li class="nav-item"><a class="nav-link active" href="#categorie" data-toggle="tab">Categorie</a></li>
                   <li class="nav-item"><a class="nav-link" href="#prestazionierogate" data-toggle="tab">Prestazioni erogate</a></li>
                   <li class="nav-item"><a class="nav-link" href="#richieste" data-toggle="tab">Richieste</a></li>
+                  <li class="nav-item"><a class="nav-link" href="#tuerichieste" data-toggle="tab">Le tue richieste</a></li>
                 </ul>
               </div><!-- /.card-header -->
               <div class="card-body">
@@ -442,6 +468,58 @@
 		                </tbody>
 		              </table>
                   </div>
+                  <div class="tab-pane" id="tuerichieste">
+                  	<table id="tabellaPrestazioniFruite" class="table table-bordered table-hover">
+		                <thead>
+		                <tr>
+		                  <th>Data</th>
+		                  <th>Ore</th>
+		                  <th>Stato</th>
+		                  <th>Descrizione</th>
+		                  <th>Erogatore</th>
+		                  <th>Categoria</th>
+		                </tr>
+		                </thead>
+		                <tbody>
+		                <%
+		                for(int i = 0; i < prestazioniFruite.size(); i ++)
+		                {
+		                %>
+		                	<tr>
+				               	<td><%=prestazioniFruite.get(i).getDataFormattata() %></td>
+				               	<td><%=prestazioniFruite.get(i).getOre() %></td>
+				               	<td>
+				               	<%
+				               	if(prestazioniFruite.get(i).getStatoPrestazione() == 0)
+				               	{
+				               	%>
+				               		Da approvare
+				               	<%
+				               	}
+				               	else if(prestazioniFruite.get(i).getStatoPrestazione() == 1)
+				               	{
+				               	%>
+				               		In corso
+				               	<%
+				               	}
+				               	else if(prestazioniFruite.get(i).getStatoPrestazione() == 2)
+				               	{
+				               	%>
+				               		Finita
+				               	<%
+				               	}
+				               	%>
+				               	</td>
+				               	<td><%=prestazioniFruite.get(i).getDescrizione() %></td>
+				               	<td><%=prestazioniFruite.get(i).getErogatore().getNominativo() %></td>
+				               	<td><%=prestazioniFruite.get(i).getCategoria().getDescrizione() %></td>
+		                	</tr>
+		                <%
+		                }
+		                %>
+		                </tbody>
+		              </table>
+                  </div>
                   <!-- /.tab-pane -->
                 </div>
                 <!-- /.tab-content -->
@@ -537,7 +615,7 @@
 	$("table").DataTable({
 	      "paging": true,
 	      "lengthChange": false,
-	      "searching": true,
+	      "searching": false,
 	      "ordering": true,
 	      "info": false,
 	      "autoWidth": false,

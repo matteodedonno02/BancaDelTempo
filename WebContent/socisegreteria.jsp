@@ -1,3 +1,4 @@
+<%@page import="it.meucci.Prestazione"%>
 <%@page import="java.util.Properties"%>
 <%@page import="it.meucci.ManagerDB"%>
 <%@page import="java.util.ArrayList"%>
@@ -9,6 +10,8 @@
 	ArrayList<Utente> sociSegreteria;
 	Properties prop;
 	ManagerDB db;
+	ArrayList<Prestazione> prestazioniDaApprovare;
+	ArrayList<Prestazione> prestazioniDaConcludere;
 %>
 <%
 	utente = (Utente)session.getAttribute("LOGGED_USER");
@@ -22,6 +25,8 @@
 	prop = (Properties)getServletContext().getAttribute("PROPERTIES");
 	db = new ManagerDB(prop.getProperty("db.host"), prop.getProperty("db.port"), prop.getProperty("db.database"), prop.getProperty("db.user"), prop.getProperty("db.password"));
 	sociSegreteria = db.sociSegreteria();
+	prestazioniDaApprovare = db.prestazioniDaApprovare(utente.getIdUtente());
+	prestazioniDaConcludere = db.prestazioniDaConcludere(utente.getIdUtente());
 	db.chiudiConnessione();
 %>
 <!DOCTYPE html>
@@ -70,22 +75,45 @@
 	      <li class="nav-item dropdown">
 	        <a class="nav-link" data-toggle="dropdown" href="#">
 	          <i class="far fa-bell"></i>
-	          <span class="badge badge-warning navbar-badge">1</span>
+	          <span class="badge badge-warning navbar-badge"><%=prestazioniDaApprovare.size() + prestazioniDaConcludere.size() %></span>
 	        </a>
 	        <div class="dropdown-menu dropdown-menu-lg dropdown-menu-right">
-	          <a href="#" class="dropdown-item">
-	            <!-- Message Start -->
-	            <div class="media">
-	              <img src="dist/img/user1-128x128.jpg" alt="User Avatar" class="img-size-50 mr-3 img-circle">
-	              <div class="media-body">
-	                <h3 class="dropdown-item-title">
-	                  Brad Diesel
-	                </h3>
-	                <p class="text-sm">Call me whenever you can...</p>
-	              </div>
-	            </div>
-	            <!-- Message End -->
-	          </a>
+	            <%
+	            for(int i = 0; i < prestazioniDaApprovare.size(); i ++)
+	            {
+	            %>
+	            	<a href="profilo.jsp#richieste" class="dropdown-item">
+	            	<!-- Message Start -->
+		            <div class="media">
+		              <div class="media-body">
+		                <h3 class="dropdown-item-title">
+		                  <b>RICHIESTA DA</b> <%=prestazioniDaApprovare.get(i).getFruitore().getNominativo() %>
+		                </h3>
+		                <p class="text-sm"><%=prestazioniDaApprovare.get(i).getDescrizione() %></p>
+		              </div>
+		            </div>
+		            <!-- Message End -->
+	          		</a>
+	            <%
+	            }
+	            for(int i = 0; i < prestazioniDaConcludere.size(); i ++)
+	            {
+	            %>
+	            	<a href="profilo.jsp#richieste" class="dropdown-item">
+	            	<!-- Message Start -->
+		            <div class="media">
+		              <div class="media-body">
+		                <h3 class="dropdown-item-title">
+		                  <b>DA CONCLUDERE</b> <%=prestazioniDaConcludere.get(i).getFruitore().getNominativo() %>
+		                </h3>
+		                <p class="text-sm"><%=prestazioniDaConcludere.get(i).getDescrizione() %></p>
+		              </div>
+		            </div>
+		            <!-- Message End -->
+	          		</a>
+	            <%
+	            }
+	            %>
 	          <div class="dropdown-divider"></div>
 	        </div>
 	      </li>
