@@ -358,9 +358,10 @@ public class ManagerDB
 		
 		try 
 		{
-			String query = "SELECT SUM(p.ore) oreErogate FROM utenti u "
-					+ "INNER JOIN "
-					+ "prestazioni p ON u.idUtente = p.idErogatore WHERE u.idUtente = ? GROUP BY u.idUtente AND p.statoPrestazione = 2";
+			String query = "SELECT SUM(ORE) as oreErogate "
+					+ "FROM utenti u "
+					+ "INNER JOIN prestazioni p ON u.idUtente = p.idErogatore "
+					+ "WHERE p.idErogatore = ? AND p.statoPrestazione = 2 GROUP BY p.idErogatore";
 			PreparedStatement ps = conn.prepareStatement(query);
 			ps.setInt(1, idUtente);
 			
@@ -388,9 +389,10 @@ public class ManagerDB
 		
 		try 
 		{
-			String query = "SELECT SUM(p.ore) oreFruite FROM utenti u "
-					+ "INNER JOIN "
-					+ "prestazioni p ON u.idUtente = p.idFruitore WHERE u.idUtente = ? GROUP BY u.idUtente AND p.statoPrestazione = 2";
+			String query = "SELECT SUM(ORE) as oreFruite "
+					+ "FROM utenti u "
+					+ "INNER JOIN prestazioni p ON u.idUtente = p.idFruitore "
+					+ "WHERE p.idFruitore = ? AND p.statoPrestazione = 2 GROUP BY p.idFruitore";
 			PreparedStatement ps = conn.prepareStatement(query);
 			ps.setInt(1, idUtente);
 			
