@@ -72,6 +72,17 @@ public class GestionePrestazioniServlet extends HttpServlet
 				response.sendRedirect("profilo.jsp#richieste");
 			}
 			break;
+			
+			
+			case "rifiutaPrestazione":
+			{
+				Properties prop = (Properties)getServletContext().getAttribute("PROPERTIES");
+				ManagerDB db = new ManagerDB(prop.getProperty("db.host"), prop.getProperty("db.port"), prop.getProperty("db.database"), prop.getProperty("db.user"), prop.getProperty("db.password"));
+				db.rifiutaPrestazione(Integer.parseInt(request.getParameter("idPrestazione")));
+				db.chiudiConnessione();
+				response.sendRedirect("profilo.jsp#richieste");
+			}
+			break;
 	
 			default:
 			break;

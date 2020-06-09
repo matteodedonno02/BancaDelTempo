@@ -1094,6 +1094,23 @@ public class ManagerDB
 	}
 	
 	
+	public void rifiutaPrestazione(int idPrestazione)
+	{
+		try 
+		{
+			String query = "DELETE FROM prestazioni "
+					+ "WHERE idPrestazione = ?";
+			PreparedStatement ps = conn.prepareStatement(query);
+			ps.setInt(1, idPrestazione);
+			ps.execute();
+		} 
+		catch (Exception e) 
+		{
+			e.printStackTrace();
+		}
+	}
+	
+	
 	public void chiudiConnessione()
 	{
 		try 

@@ -417,6 +417,7 @@
 		                  <th>Categoria</th>
 		                  <th>Fruitore</th>
 		                  <th>Approva</th>
+		                  <th>Rifiuta</th>
 		                </tr>
 		                </thead>
 		                <tbody>
@@ -431,6 +432,7 @@
 				               	<td><%=prestazioniDaApprovare.get(i).getCategoria().getDescrizione() %></td>
 				               	<td><%=prestazioniDaApprovare.get(i).getFruitore().getNominativo() %></td>
 				               	<td style="text-align: center;"><a href="gestionePrestazioni?cmd=approvaPrestazione&idPrestazione=<%=prestazioniDaApprovare.get(i).getIdPrestazione() %>"><i class="fas fa-check-circle"></i></a></td>
+				               	<td style="text-align: center;"><a href="gestionePrestazioni?cmd=rifiutaPrestazione&idPrestazione=<%=prestazioniDaApprovare.get(i).getIdPrestazione() %>"><i class="fas fa-minus-circle"></i></a></td>
 		                	</tr>
 		                <%
 		                }
