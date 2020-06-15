@@ -395,7 +395,7 @@
 		                {
 		                %>
 		                	<tr>
-				               	<td><%=prestazioniErogate.get(i).getData() %></td>
+				               	<td><%=prestazioniErogate.get(i).getDataFormattata() %></td>
 				               	<td><%=prestazioniErogate.get(i).getOre() %></td>
 				               	<td><%=prestazioniErogate.get(i).getDescrizione() %></td>
 				               	<td><%=prestazioniErogate.get(i).getFruitore().getNominativo() %></td>

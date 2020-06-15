@@ -17,7 +17,8 @@
 	if(utente != null)
 	{
 		prop = (Properties)getServletContext().getAttribute("PROPERTIES");
-		db = new ManagerDB(prop.getProperty("db.host"), prop.getProperty("db.port"), prop.getProperty("db.database"), prop.getProperty("db.user"), prop.getProperty("db.password"));
+		db = new ManagerDB(prop.getProperty("db.host"), prop.getProperty("db.port"), prop.getProperty("db.database"), 
+				                                        prop.getProperty("db.user"), prop.getProperty("db.password"));
 		prestazioniDaApprovare = db.prestazioniDaApprovare(utente.getIdUtente());
 		prestazioniDaConcludere = db.prestazioniDaConcludere(utente.getIdUtente());
 		db.chiudiConnessione();

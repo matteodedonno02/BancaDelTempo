@@ -397,14 +397,15 @@
 <script src="http://malsup.github.com/jquery.form.js"></script>
 <!-- page script -->
 <script>
+	debugger;
 	var d = new Date();
 	var day = d.getDate();
-	if($(day).length == 1)
+	if(day.toString().length == 1)
 	{
 		day = 0 + day.toString();
 	}
 	var month = d.getMonth() + 1;
-	if($(month).length == 1)
+	if(month.toString().length == 1)
 	{
 		month = 0 + month.toString();
 	}

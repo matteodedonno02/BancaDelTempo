@@ -420,7 +420,7 @@ public class ManagerDB
 		
 		try 
 		{
-			String query = "SELECT * FROM utenti u "
+			String query = "SELECT *, DATE_FORMAT(p.data, '%d/%m/%Y') dataFormattata  FROM utenti u "
 					+ "INNER JOIN "
 					+ "prestazioni p ON u.idUtente = p.idFruitore "
 					+ "WHERE p.idErogatore = ? AND p.statoPrestazione = 2 ORDER BY p.ore DESC";
@@ -431,7 +431,7 @@ public class ManagerDB
 			ResultSet rs = ps.executeQuery();
 			while(rs.next())
 			{
-				temp.add(new Prestazione(rs.getDate("data"), rs.getInt("ore"), rs.getString("descrizione"), new Utente(rs.getString("email"), rs.getString("password"), rs.getString("nominativo"), rs.getString("telefono"))));
+				temp.add(new Prestazione(rs.getInt("idPrestazione"), rs.getString("dataFormattata"), rs.getInt("ore"), rs.getString("descrizione"), rs.getInt("statoPrestazione"), null, new Utente(rs.getString("email"), null, rs.getString("nominativo"), rs.getString("telefono")), null));
 			}
 		} 
 		catch (Exception e) 

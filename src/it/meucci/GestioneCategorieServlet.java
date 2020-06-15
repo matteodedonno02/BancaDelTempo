@@ -39,7 +39,8 @@ public class GestioneCategorieServlet extends HttpServlet
 				
 				
 				Properties prop = (Properties)getServletContext().getAttribute("PROPERTIES");
-				ManagerDB db = new ManagerDB(prop.getProperty("db.host"), prop.getProperty("db.port"), prop.getProperty("db.database"), prop.getProperty("db.user"), prop.getProperty("db.password"));
+				ManagerDB db = new ManagerDB(prop.getProperty("db.host"), prop.getProperty("db.port"), prop.getProperty("db.database"), 
+						                                                  prop.getProperty("db.user"), prop.getProperty("db.password"));
 				
 				
 				int idCategoria = Integer.parseInt(request.getParameter("idCategoria"));
